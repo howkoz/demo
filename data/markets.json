@@ -1,0 +1,222 @@
+[
+  {
+    "code": "USA",
+    "name": "United States",
+    "flag": "US",
+    "mu": "01",
+    "base": 76.0,
+    "current_rate": 74.98,
+    "trend_7d": -0.85,
+    "volume_mtd": 9992007,
+    "orders_mtd": 171060
+  },
+  {
+    "code": "CAN",
+    "name": "Canada",
+    "flag": "CA",
+    "mu": "02",
+    "base": 78.0,
+    "current_rate": 77.35,
+    "trend_7d": 0.51,
+    "volume_mtd": 1877518,
+    "orders_mtd": 32884
+  },
+  {
+    "code": "MEX",
+    "name": "Mexico",
+    "flag": "MX",
+    "mu": "03",
+    "base": 72.0,
+    "current_rate": 73.79,
+    "trend_7d": 0.69,
+    "volume_mtd": 1557799,
+    "orders_mtd": 27998
+  },
+  {
+    "code": "BRA",
+    "name": "Brazil",
+    "flag": "BR",
+    "mu": "04",
+    "base": 65.0,
+    "current_rate": 65.31,
+    "trend_7d": -0.74,
+    "volume_mtd": 897827,
+    "orders_mtd": 18706
+  },
+  {
+    "code": "JPN",
+    "name": "Japan",
+    "flag": "JP",
+    "mu": "10",
+    "base": 92.0,
+    "current_rate": 92.73,
+    "trend_7d": 0.93,
+    "volume_mtd": 8544469,
+    "orders_mtd": 124047
+  },
+  {
+    "code": "KOR",
+    "name": "Korea",
+    "flag": "KR",
+    "mu": "11",
+    "base": 78.0,
+    "current_rate": 77.38,
+    "trend_7d": -1.08,
+    "volume_mtd": 4822179,
+    "orders_mtd": 84219
+  },
+  {
+    "code": "TWN",
+    "name": "Taiwan",
+    "flag": "TW",
+    "mu": "12",
+    "base": 82.0,
+    "current_rate": 81.25,
+    "trend_7d": -0.74,
+    "volume_mtd": 2816690,
+    "orders_mtd": 45659
+  },
+  {
+    "code": "HKG",
+    "name": "Hong Kong",
+    "flag": "HK",
+    "mu": "13",
+    "base": 83.0,
+    "current_rate": 81.39,
+    "trend_7d": -0.24,
+    "volume_mtd": 1471580,
+    "orders_mtd": 22645
+  },
+  {
+    "code": "THA",
+    "name": "Thailand",
+    "flag": "TH",
+    "mu": "14",
+    "base": 70.0,
+    "current_rate": 69.49,
+    "trend_7d": -1.07,
+    "volume_mtd": 2046069,
+    "orders_mtd": 38317
+  },
+  {
+    "code": "MYS",
+    "name": "Malaysia",
+    "flag": "MY",
+    "mu": "15",
+    "base": 74.0,
+    "current_rate": 73.48,
+    "trend_7d": -1.0,
+    "volume_mtd": 1364383,
+    "orders_mtd": 25126
+  },
+  {
+    "code": "SGP",
+    "name": "Singapore",
+    "flag": "SG",
+    "mu": "16",
+    "base": 80.0,
+    "current_rate": 78.89,
+    "trend_7d": -0.64,
+    "volume_mtd": 1127569,
+    "orders_mtd": 19084
+  },
+  {
+    "code": "PHL",
+    "name": "Philippines",
+    "flag": "PH",
+    "mu": "17",
+    "base": 68.0,
+    "current_rate": 67.61,
+    "trend_7d": -0.45,
+    "volume_mtd": 1171607,
+    "orders_mtd": 21333
+  },
+  {
+    "code": "IDN",
+    "name": "Indonesia",
+    "flag": "ID",
+    "mu": "18",
+    "base": 66.0,
+    "current_rate": 65.1,
+    "trend_7d": -0.36,
+    "volume_mtd": 745676,
+    "orders_mtd": 15557
+  },
+  {
+    "code": "VNM",
+    "name": "Vietnam",
+    "flag": "VN",
+    "mu": "19",
+    "base": 71.0,
+    "current_rate": 72.42,
+    "trend_7d": 1.68,
+    "volume_mtd": 669767,
+    "orders_mtd": 12448
+  },
+  {
+    "code": "AUS",
+    "name": "Australia",
+    "flag": "AU",
+    "mu": "20",
+    "base": 79.0,
+    "current_rate": 79.29,
+    "trend_7d": 0.53,
+    "volume_mtd": 1673789,
+    "orders_mtd": 27579
+  },
+  {
+    "code": "NZL",
+    "name": "New Zealand",
+    "flag": "NZ",
+    "mu": "21",
+    "base": 80.0,
+    "current_rate": 80.69,
+    "trend_7d": 1.36,
+    "volume_mtd": 517641,
+    "orders_mtd": 8628
+  },
+  {
+    "code": "ITA",
+    "name": "Italy",
+    "flag": "IT",
+    "mu": "30",
+    "base": 90.0,
+    "current_rate": 89.12,
+    "trend_7d": -2.49,
+    "volume_mtd": 1159658,
+    "orders_mtd": 16809
+  },
+  {
+    "code": "DEU",
+    "name": "Germany",
+    "flag": "DE",
+    "mu": "31",
+    "base": 88.0,
+    "current_rate": 87.32,
+    "trend_7d": -0.08,
+    "volume_mtd": 1470994,
+    "orders_mtd": 22733
+  },
+  {
+    "code": "NLD",
+    "name": "Netherlands",
+    "flag": "NL",
+    "mu": "32",
+    "base": 89.0,
+    "current_rate": 88.89,
+    "trend_7d": 0.84,
+    "volume_mtd": 926913,
+    "orders_mtd": 14566
+  },
+  {
+    "code": "GBR",
+    "name": "United Kingdom",
+    "flag": "GB",
+    "mu": "33",
+    "base": 85.0,
+    "current_rate": 84.37,
+    "trend_7d": 0.84,
+    "volume_mtd": 1685377,
+    "orders_mtd": 25523
+  }
+]

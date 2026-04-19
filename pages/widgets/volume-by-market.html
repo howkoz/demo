@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Volume by Market - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Top corridors</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Volume ranking</span><span class="sub-chart-sub">USD, period total</span></div>
+      <div class="sub-chart-body" id="chart-vol"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Order count vs avg ticket</span><span class="sub-chart-sub">top 10 markets</span></div>
+      <div class="sub-chart-body" id="chart-aov"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Volume ledger</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Market</th><th class="num">Orders</th><th class="num">Approved</th>
+        <th class="num">Volume (USD)</th><th class="num">AOV</th>
+        <th class="num">Share</th><th class="num">Approval %</th>
+      </tr></thead>
+      <tbody id="vol-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Volume by Market', 'corridor ranking &middot; orders &middot; USD', '#5ac8fa');
+
+  let days = 365;
+
+  function render(){
+    const rows = PortalData.filterByDays(state.approval, days);
+    const byMkt = new Map();
+    for (const r of rows){
+      if (!byMkt.has(r.market)) byMkt.set(r.market, {market:r.market, orders:0, approved:0, vol:0});
+      const b = byMkt.get(r.market);
+      b.orders+=r.orders; b.approved+=r.approved; b.vol+=r.volume_usd;
+    }
+    const arr = Array.from(byMkt.values()).sort((a,b)=>b.vol-a.vol);
+    const totalVol = arr.reduce((s,r)=>s+r.vol,0);
+    const totalOrd = arr.reduce((s,r)=>s+r.orders,0);
+    const totalApp = arr.reduce((s,r)=>s+r.approved,0);
+    const top3Vol = arr.slice(0,3).reduce((s,r)=>s+r.vol,0);
+    const aov = totalOrd? totalVol/totalOrd : 0;
+
+    document.getElementById('sub-kpis').innerHTML =
+      SubPage.kpiTile('Total volume', SubPage.fmtUsd(totalVol), 'gross (pre-fees)', 'violet') +
+      SubPage.kpiTile('Total orders', SubPage.fmtInt(totalOrd), 'approved + declined', 'cool') +
+      SubPage.kpiTile('Avg order value', '$' + aov.toFixed(0), 'blended', 'cool') +
+      SubPage.kpiTile('Top-3 share', (top3Vol/Math.max(totalVol,1)*100).toFixed(1)+'%', arr.slice(0,3).map(r=>r.market).join(' / '), 'warn') +
+      SubPage.kpiTile('Markets active', SubPage.fmtInt(arr.length), 'with &ge;1 order', 'good') +
+      SubPage.kpiTile('Approval rate', (totalOrd?totalApp/totalOrd*100:0).toFixed(1)+'%', 'portfolio blended', 'good');
+
+    // Volume ranking
+    document.getElementById('chart-vol').innerHTML='';
+    SubPage.renderChart('chart-vol', {
+      chart:{type:'bar', height:280},
+      series:[{name:'Volume', data: arr.map(r=>({x:r.market, y:Math.round(r.vol)}))}],
+      plotOptions:{bar:{columnWidth:'60%', borderRadius:2}},
+      colors:['#5ac8fa'],
+      yaxis:{labels:{formatter:v=>SubPage.fmtUsd(v)}},
+      tooltip:{y:{formatter:v=>SubPage.fmtUsd(v)}}
+    });
+
+    // Scatter: orders vs AOV for top 10 markets
+    const top10 = arr.slice(0,10);
+    document.getElementById('chart-aov').innerHTML='';
+    SubPage.renderChart('chart-aov', {
+      chart:{type:'scatter', height:280, zoom:{enabled:false}},
+      series:[{name:'Markets', data: top10.map(r=>({x:r.orders, y:Math.round(r.vol/Math.max(r.orders,1))}))}],
+      colors:['#7cff9b'],
+      xaxis:{type:'numeric', labels:{formatter:v=>SubPage.fmtInt(Math.round(v))}, title:{text:'Orders', style:{color:'#6b778a',fontSize:'10px'}}},
+      yaxis:{labels:{formatter:v=>'$'+Math.round(v)}, title:{text:'Avg order value', style:{color:'#6b778a',fontSize:'10px'}}},
+      tooltip:{custom: ({seriesIndex, dataPointIndex}) => {
+        const m = top10[dataPointIndex];
+        return '<div style="padding:6px 10px;font-family:JetBrains Mono,monospace;font-size:11px;background:#0c1117;border:1px solid #1f2a3a;color:#e7eef7">' +
+          '<b>'+m.market+'</b><br>'+SubPage.fmtInt(m.orders)+' orders<br>AOV $'+Math.round(m.vol/m.orders)+
+        '</div>';
+      }},
+      markers:{size:7}
+    });
+
+    const c = document.getElementById('sub-callout');
+    c.className = 'sub-callout';
+    c.innerHTML =
+      '<div class="ico">CONCENTRATION</div>' +
+      '<div class="msg">Top-3 corridors concentrate <b>' + (top3Vol/Math.max(totalVol,1)*100).toFixed(1) +
+      '%</b> of volume (' + arr.slice(0,3).map(r=>r.market).join(', ') + '). ' +
+      'Route diversification limits processor-outage blast radius &mdash; ensure each top corridor has a warm fallback gateway.</div>';
+
+    // Table
+    const tbl = arr.map(r => {
+      const appRate = r.orders? r.approved/r.orders*100 : 0;
+      const share = r.vol/Math.max(totalVol,1)*100;
+      return '<tr>' +
+        '<td><b>' + r.market + '</b></td>' +
+        '<td class="num">' + SubPage.fmtInt(r.orders) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(r.approved) + '</td>' +
+        '<td class="num"><b>' + SubPage.fmtUsd(r.vol) + '</b></td>' +
+        '<td class="num">$' + (r.orders?Math.round(r.vol/r.orders):0) + '</td>' +
+        '<td class="num">' + share.toFixed(1) + '%</td>' +
+        '<td class="num">' + appRate.toFixed(1) + '%</td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('vol-tbody').innerHTML = tbl;
+  }
+
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Range</label>' +
+    '<div class="sub-pill-toggle" id="r-btns">' +
+      '<button data-d="365" class="active">1Y</button><button data-d="180">6M</button>' +
+      '<button data-d="90">3M</button><button data-d="30">1M</button>' +
+    '</div>';
+  document.querySelectorAll('#r-btns button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#r-btns button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); days=+b.dataset.d; render();
+  }));
+  render();
+})();
+</script>
+</body>
+</html>

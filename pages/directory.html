@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Provider Directory - Portal 9094 DEMO</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<style>
+  .dir-wrap{padding:18px;max-width:1400px;margin:0 auto}
+  .dir-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .dir-head h1{font-size:18px;margin:0;font-weight:600}
+  .dir-filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .dir-filters input,.dir-filters select{
+    background:var(--bg-2);color:var(--ink-0);border:1px solid var(--line);
+    padding:8px 12px;border-radius:4px;font-size:12px
+  }
+  .dir-filters input{flex:1;min-width:260px}
+  .dir-card{background:var(--bg-1);border:1px solid var(--line);border-radius:6px;padding:14px}
+  .summary{display:flex;gap:24px;padding:12px 14px;background:var(--bg-2);border-radius:4px;margin-bottom:14px}
+  .summary .s{display:flex;flex-direction:column}
+  .summary .v{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--ink-0)}
+  .summary .l{font-size:10px;color:var(--ink-2);text-transform:uppercase;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">9094</span>
+    <span class="title">Payment Operations Command Center</span>
+    <span class="demo-badge">DEMO &middot; synthetic data</span>
+  </div>
+  <nav class="topnav">
+    <a href="../index.html">Command Center</a>
+    <a href="directory.html" class="active">Provider Directory</a>
+    <a href="docs/index.html">Docs</a>
+    <a href="../schema.html">Backend Schema</a>
+  </nav>
+</header>
+
+<div class="dir-wrap">
+  <div class="dir-head">
+    <h1>Provider Directory</h1>
+    <span class="widget-sub" id="count-label">loading&hellip;</span>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="dir-filters">
+    <input type="text" id="search" placeholder="Search by name, market, method, model...">
+    <select id="status"><option value="">All statuses</option><option>ACTIVE</option><option>PILOT</option><option>DORMANT</option><option>DEPRECATED</option></select>
+    <select id="region"><option value="">All regions</option></select>
+    <select id="method"><option value="">All methods</option></select>
+  </div>
+
+  <div class="dir-card">
+    <table class="dirtable" id="tbl">
+      <thead>
+        <tr>
+          <th>Provider</th><th>Status</th><th>Region</th><th>Model</th>
+          <th>Payment methods</th><th>Markets</th><th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<footer class="footer">
+  <span>Portal 9094 demo &middot; provider directory &middot; figures synthetic</span>
+  <span class="footer-right">provider metadata is real</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script>
+(async function(){
+  const res = await fetch('../data/providers.json');
+  const data = await res.json();
+  const providers = (data.providers || data).slice().sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById('count-label').textContent = providers.length + ' providers';
+
+  // Summary cells
+  const statusCount = providers.reduce((a,p) => {a[p.status] = (a[p.status]||0)+1; return a;}, {});
+  const regionCount = new Set(providers.map(p => p.region)).size;
+  const methodCount = new Set(providers.flatMap(p => p.methods || [])).size;
+  document.getElementById('summary').innerHTML =
+    '<div class="s"><div class="v">' + providers.length + '</div><div class="l">Providers</div></div>' +
+    '<div class="s"><div class="v" style="color:#4ade80">' + (statusCount.ACTIVE||0) + '</div><div class="l">Active</div></div>' +
+    '<div class="s"><div class="v" style="color:#5ac8fa">' + (statusCount.PILOT||0) + '</div><div class="l">Pilot</div></div>' +
+    '<div class="s"><div class="v" style="color:#ffb454">' + (statusCount.DORMANT||0) + '</div><div class="l">Dormant</div></div>' +
+    '<div class="s"><div class="v" style="color:#ff5d73">' + (statusCount.DEPRECATED||0) + '</div><div class="l">Deprecated</div></div>' +
+    '<div class="s"><div class="v">' + regionCount + '</div><div class="l">Regions</div></div>' +
+    '<div class="s"><div class="v">' + methodCount + '</div><div class="l">Methods</div></div>';
+
+  // Populate filter dropdowns
+  const regions = Array.from(new Set(providers.map(p => p.region).filter(Boolean))).sort();
+  const regionSel = document.getElementById('region');
+  regions.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; regionSel.appendChild(o); });
+
+  const methods = Array.from(new Set(providers.flatMap(p => p.methods || []))).sort();
+  const methodSel = document.getElementById('method');
+  methods.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; methodSel.appendChild(o); });
+
+  const fuse = new Fuse(providers, {keys:['name','region','methods','markets','model','notes'], threshold:0.35});
+  const tbody = document.getElementById('tbody');
+  const searchBox = document.getElementById('search');
+  const statusSel = document.getElementById('status');
+
+  function render(){
+    let list = providers;
+    const q = searchBox.value.trim();
+    if (q) list = fuse.search(q).map(x => x.item);
+    const sv = statusSel.value, rv = regionSel.value, mv = methodSel.value;
+    if (sv) list = list.filter(p => p.status === sv);
+    if (rv) list = list.filter(p => p.region === rv);
+    if (mv) list = list.filter(p => (p.methods || []).includes(mv));
+
+    if (!list.length){
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:#6b778a">no providers match</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(p =>
+      '<tr>' +
+        '<td><b style="color:#e7eef7">' + p.name + '</b></td>' +
+        '<td><span class="pill ' + p.status + '">' + p.status + '</span></td>' +
+        '<td>' + (p.region || '') + '</td>' +
+        '<td>' + (p.model || '') + '</td>' +
+        '<td>' + (p.methods || []).join(', ') + '</td>' +
+        '<td>' + (p.markets || []).join(', ') + '</td>' +
+        '<td style="color:#6b778a">' + (p.notes || '') + '</td>' +
+      '</tr>'
+    ).join('');
+  }
+  [searchBox, statusSel, regionSel, methodSel].forEach(el => el.addEventListener('input', render));
+  [searchBox, statusSel, regionSel, methodSel].forEach(el => el.addEventListener('change', render));
+  render();
+})();
+</script>
+</body>
+</html>

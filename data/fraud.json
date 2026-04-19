@@ -1,0 +1,1427 @@
+{
+  "generated_at": "2026-04-19",
+  "signals": [
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "SGP",
+      "count": 65,
+      "amount_usd": 17373
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "NZL",
+      "count": 52,
+      "amount_usd": 13346
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "AUS",
+      "count": 43,
+      "amount_usd": 12903
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "GBR",
+      "count": 40,
+      "amount_usd": 12134
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "USA",
+      "count": 39,
+      "amount_usd": 12103
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "DEU",
+      "count": 66,
+      "amount_usd": 9627
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "NZL",
+      "count": 21,
+      "amount_usd": 8232
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "MYS",
+      "count": 40,
+      "amount_usd": 7953
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "ITA",
+      "count": 37,
+      "amount_usd": 7891
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "IDN",
+      "count": 47,
+      "amount_usd": 7816
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "BRA",
+      "count": 31,
+      "amount_usd": 7755
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "JPN",
+      "count": 45,
+      "amount_usd": 6926
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "HKG",
+      "count": 30,
+      "amount_usd": 6913
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "BRA",
+      "count": 25,
+      "amount_usd": 6525
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "MYS",
+      "count": 32,
+      "amount_usd": 6518
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "MYS",
+      "count": 35,
+      "amount_usd": 6381
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "ITA",
+      "count": 31,
+      "amount_usd": 6022
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "IDN",
+      "count": 28,
+      "amount_usd": 6020
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "KOR",
+      "count": 32,
+      "amount_usd": 5878
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "MYS",
+      "count": 36,
+      "amount_usd": 5824
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "USA",
+      "count": 23,
+      "amount_usd": 5710
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "AUS",
+      "count": 19,
+      "amount_usd": 5706
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "SGP",
+      "count": 18,
+      "amount_usd": 5392
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "VNM",
+      "count": 25,
+      "amount_usd": 5339
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "PHL",
+      "count": 22,
+      "amount_usd": 5338
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "MEX",
+      "count": 24,
+      "amount_usd": 5187
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "THA",
+      "count": 21,
+      "amount_usd": 5118
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "PHL",
+      "count": 16,
+      "amount_usd": 5032
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "IDN",
+      "count": 22,
+      "amount_usd": 4863
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "GBR",
+      "count": 14,
+      "amount_usd": 4801
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "MEX",
+      "count": 47,
+      "amount_usd": 4653
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "CAN",
+      "count": 20,
+      "amount_usd": 4566
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "BRA",
+      "count": 17,
+      "amount_usd": 4524
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "THA",
+      "count": 18,
+      "amount_usd": 4456
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "MYS",
+      "count": 21,
+      "amount_usd": 4407
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "SGP",
+      "count": 18,
+      "amount_usd": 4281
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "CAN",
+      "count": 23,
+      "amount_usd": 4215
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "JPN",
+      "count": 28,
+      "amount_usd": 4200
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "KOR",
+      "count": 16,
+      "amount_usd": 4159
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "VNM",
+      "count": 38,
+      "amount_usd": 4155
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "CAN",
+      "count": 10,
+      "amount_usd": 4028
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "NLD",
+      "count": 11,
+      "amount_usd": 3997
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "THA",
+      "count": 24,
+      "amount_usd": 3987
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "THA",
+      "count": 18,
+      "amount_usd": 3943
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "CAN",
+      "count": 16,
+      "amount_usd": 3881
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "THA",
+      "count": 19,
+      "amount_usd": 3553
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "NLD",
+      "count": 14,
+      "amount_usd": 3445
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "JPN",
+      "count": 19,
+      "amount_usd": 3378
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "TWN",
+      "count": 15,
+      "amount_usd": 3283
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "USA",
+      "count": 25,
+      "amount_usd": 2986
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "PHL",
+      "count": 15,
+      "amount_usd": 2898
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "KOR",
+      "count": 10,
+      "amount_usd": 2813
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "TWN",
+      "count": 12,
+      "amount_usd": 2812
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "ITA",
+      "count": 13,
+      "amount_usd": 2790
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "MEX",
+      "count": 17,
+      "amount_usd": 2757
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "AUS",
+      "count": 23,
+      "amount_usd": 2731
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "NLD",
+      "count": 18,
+      "amount_usd": 2465
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "NZL",
+      "count": 10,
+      "amount_usd": 2326
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "ITA",
+      "count": 12,
+      "amount_usd": 2116
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "TWN",
+      "count": 13,
+      "amount_usd": 2099
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "VNM",
+      "count": 11,
+      "amount_usd": 2080
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "JPN",
+      "count": 11,
+      "amount_usd": 1963
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "KOR",
+      "count": 13,
+      "amount_usd": 1868
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "THA",
+      "count": 7,
+      "amount_usd": 1865
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "AUS",
+      "count": 16,
+      "amount_usd": 1839
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "GBR",
+      "count": 9,
+      "amount_usd": 1830
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "PHL",
+      "count": 6,
+      "amount_usd": 1821
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "SGP",
+      "count": 15,
+      "amount_usd": 1806
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "VNM",
+      "count": 11,
+      "amount_usd": 1646
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "DEU",
+      "count": 8,
+      "amount_usd": 1511
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "IDN",
+      "count": 9,
+      "amount_usd": 1432
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "NLD",
+      "count": 16,
+      "amount_usd": 1426
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "VNM",
+      "count": 10,
+      "amount_usd": 1262
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "NZL",
+      "count": 7,
+      "amount_usd": 1242
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "HKG",
+      "count": 10,
+      "amount_usd": 1167
+    },
+    {
+      "kind": "CB_CLUSTER",
+      "label": "Chargeback cluster",
+      "severity": "HIGH",
+      "market": "PHL",
+      "count": 5,
+      "amount_usd": 1139
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "PHL",
+      "count": 8,
+      "amount_usd": 966
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "THA",
+      "count": 5,
+      "amount_usd": 742
+    },
+    {
+      "kind": "FAST_TERMINATE",
+      "label": "Fast enroll-then-terminate cycle",
+      "severity": "INFO",
+      "market": "DEU",
+      "count": 2,
+      "amount_usd": 706
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "GBR",
+      "count": 5,
+      "amount_usd": 611
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "SGP",
+      "count": 2,
+      "amount_usd": 510
+    },
+    {
+      "kind": "STACKED_ENROLL",
+      "label": "Stacked enrollments (one actor, multiple IDs)",
+      "severity": "WARN",
+      "market": "HKG",
+      "count": 26,
+      "amount_usd": 494
+    },
+    {
+      "kind": "PROMO_STACKING",
+      "label": "Repeated first-order-only promo abuse",
+      "severity": "INFO",
+      "market": "TWN",
+      "count": 4,
+      "amount_usd": 422
+    },
+    {
+      "kind": "MISMATCHED_BIN",
+      "label": "BIN country mismatches shipping country",
+      "severity": "WARN",
+      "market": "AUS",
+      "count": 5,
+      "amount_usd": 353
+    },
+    {
+      "kind": "BONUS_TIMING",
+      "label": "Suspicious order timing near bonus cutoff",
+      "severity": "WARN",
+      "market": "IDN",
+      "count": 6,
+      "amount_usd": 294
+    },
+    {
+      "kind": "REFUND_RING",
+      "label": "Refund ring pattern",
+      "severity": "HIGH",
+      "market": "DEU",
+      "count": 1,
+      "amount_usd": 132
+    },
+    {
+      "kind": "CARD_VELOCITY",
+      "label": "Card velocity (same card, high burst)",
+      "severity": "HIGH",
+      "market": "MYS",
+      "count": 19,
+      "amount_usd": 50
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "HKG",
+      "count": 18,
+      "amount_usd": 50
+    },
+    {
+      "kind": "DUPLICATE_ADDR",
+      "label": "Duplicate shipping address across accounts",
+      "severity": "INFO",
+      "market": "DEU",
+      "count": 2,
+      "amount_usd": 50
+    }
+  ],
+  "trends": [
+    {
+      "date": "2026-01-20",
+      "signals": 80,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-01-21",
+      "signals": 82,
+      "high_severity": 20
+    },
+    {
+      "date": "2026-01-22",
+      "signals": 74,
+      "high_severity": 21
+    },
+    {
+      "date": "2026-01-23",
+      "signals": 86,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-01-24",
+      "signals": 79,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-01-25",
+      "signals": 89,
+      "high_severity": 22
+    },
+    {
+      "date": "2026-01-26",
+      "signals": 82,
+      "high_severity": 21
+    },
+    {
+      "date": "2026-01-27",
+      "signals": 86,
+      "high_severity": 20
+    },
+    {
+      "date": "2026-01-28",
+      "signals": 89,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-01-29",
+      "signals": 83,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-01-30",
+      "signals": 77,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-01-31",
+      "signals": 74,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-02-01",
+      "signals": 78,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-02",
+      "signals": 81,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-03",
+      "signals": 71,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-02-04",
+      "signals": 69,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-02-05",
+      "signals": 59,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-02-06",
+      "signals": 58,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-02-07",
+      "signals": 64,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-08",
+      "signals": 57,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-02-09",
+      "signals": 57,
+      "high_severity": 10
+    },
+    {
+      "date": "2026-02-10",
+      "signals": 56,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-02-11",
+      "signals": 63,
+      "high_severity": 9
+    },
+    {
+      "date": "2026-02-12",
+      "signals": 61,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-13",
+      "signals": 53,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-02-14",
+      "signals": 67,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-02-15",
+      "signals": 69,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-02-16",
+      "signals": 60,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-17",
+      "signals": 56,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-02-18",
+      "signals": 61,
+      "high_severity": 9
+    },
+    {
+      "date": "2026-02-19",
+      "signals": 53,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-20",
+      "signals": 55,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-02-21",
+      "signals": 51,
+      "high_severity": 12
+    },
+    {
+      "date": "2026-02-22",
+      "signals": 54,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-02-23",
+      "signals": 61,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-02-24",
+      "signals": 58,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-02-25",
+      "signals": 60,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-02-26",
+      "signals": 61,
+      "high_severity": 10
+    },
+    {
+      "date": "2026-02-27",
+      "signals": 66,
+      "high_severity": 10
+    },
+    {
+      "date": "2026-02-28",
+      "signals": 73,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-03-01",
+      "signals": 64,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-03-02",
+      "signals": 66,
+      "high_severity": 12
+    },
+    {
+      "date": "2026-03-03",
+      "signals": 75,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-04",
+      "signals": 75,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-05",
+      "signals": 70,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-06",
+      "signals": 69,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-03-07",
+      "signals": 59,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-03-08",
+      "signals": 64,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-09",
+      "signals": 64,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-10",
+      "signals": 66,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-03-11",
+      "signals": 66,
+      "high_severity": 12
+    },
+    {
+      "date": "2026-03-12",
+      "signals": 60,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-13",
+      "signals": 58,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-14",
+      "signals": 60,
+      "high_severity": 10
+    },
+    {
+      "date": "2026-03-15",
+      "signals": 67,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-03-16",
+      "signals": 61,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-17",
+      "signals": 65,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-18",
+      "signals": 58,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-03-19",
+      "signals": 70,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-20",
+      "signals": 67,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-03-21",
+      "signals": 65,
+      "high_severity": 11
+    },
+    {
+      "date": "2026-03-22",
+      "signals": 65,
+      "high_severity": 10
+    },
+    {
+      "date": "2026-03-23",
+      "signals": 66,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-24",
+      "signals": 61,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-03-25",
+      "signals": 64,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-03-26",
+      "signals": 73,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-03-27",
+      "signals": 67,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-03-28",
+      "signals": 73,
+      "high_severity": 13
+    },
+    {
+      "date": "2026-03-29",
+      "signals": 68,
+      "high_severity": 12
+    },
+    {
+      "date": "2026-03-30",
+      "signals": 72,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-03-31",
+      "signals": 74,
+      "high_severity": 20
+    },
+    {
+      "date": "2026-04-01",
+      "signals": 74,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-04-02",
+      "signals": 79,
+      "high_severity": 21
+    },
+    {
+      "date": "2026-04-03",
+      "signals": 76,
+      "high_severity": 17
+    },
+    {
+      "date": "2026-04-04",
+      "signals": 72,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-04-05",
+      "signals": 83,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-04-06",
+      "signals": 82,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-04-07",
+      "signals": 78,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-04-08",
+      "signals": 83,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-04-09",
+      "signals": 84,
+      "high_severity": 15
+    },
+    {
+      "date": "2026-04-10",
+      "signals": 78,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-04-11",
+      "signals": 78,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-04-12",
+      "signals": 88,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-04-13",
+      "signals": 83,
+      "high_severity": 22
+    },
+    {
+      "date": "2026-04-14",
+      "signals": 88,
+      "high_severity": 19
+    },
+    {
+      "date": "2026-04-15",
+      "signals": 78,
+      "high_severity": 20
+    },
+    {
+      "date": "2026-04-16",
+      "signals": 79,
+      "high_severity": 18
+    },
+    {
+      "date": "2026-04-17",
+      "signals": 77,
+      "high_severity": 16
+    },
+    {
+      "date": "2026-04-18",
+      "signals": 78,
+      "high_severity": 14
+    },
+    {
+      "date": "2026-04-19",
+      "signals": 85,
+      "high_severity": 18
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "FC-62518",
+      "kind": "STACKED_ENROLL",
+      "severity": "WARN",
+      "market": "JPN",
+      "opened": "2026-04-19",
+      "actor": "Blake Wong.",
+      "amount_usd": 386,
+      "note": "Stacked enrollments (one actor, multiple IDs)"
+    },
+    {
+      "case_id": "FC-19738",
+      "kind": "DUPLICATE_ADDR",
+      "severity": "INFO",
+      "market": "VNM",
+      "opened": "2026-04-19",
+      "actor": "Emerson Park.",
+      "amount_usd": 758,
+      "note": "Duplicate shipping address across accounts"
+    },
+    {
+      "case_id": "FC-52858",
+      "kind": "CARD_VELOCITY",
+      "severity": "HIGH",
+      "market": "THA",
+      "opened": "2026-04-19",
+      "actor": "Eden Tanaka.",
+      "amount_usd": 856,
+      "note": "Card velocity (same card, high burst)"
+    },
+    {
+      "case_id": "FC-45608",
+      "kind": "REFUND_RING",
+      "severity": "HIGH",
+      "market": "HKG",
+      "opened": "2026-04-16",
+      "actor": "Skyler Singh.",
+      "amount_usd": 373,
+      "note": "Refund ring pattern"
+    },
+    {
+      "case_id": "FC-64545",
+      "kind": "REFUND_RING",
+      "severity": "HIGH",
+      "market": "BRA",
+      "opened": "2026-04-13",
+      "actor": "Quinn Wong.",
+      "amount_usd": 544,
+      "note": "Refund ring pattern"
+    },
+    {
+      "case_id": "FC-56329",
+      "kind": "CB_CLUSTER",
+      "severity": "HIGH",
+      "market": "NZL",
+      "opened": "2026-04-10",
+      "actor": "Sage Baker.",
+      "amount_usd": 707,
+      "note": "Chargeback cluster"
+    },
+    {
+      "case_id": "FC-41192",
+      "kind": "DUPLICATE_ADDR",
+      "severity": "INFO",
+      "market": "MYS",
+      "opened": "2026-04-09",
+      "actor": "Kai Garcia.",
+      "amount_usd": 839,
+      "note": "Duplicate shipping address across accounts"
+    },
+    {
+      "case_id": "FC-46671",
+      "kind": "CARD_VELOCITY",
+      "severity": "HIGH",
+      "market": "KOR",
+      "opened": "2026-04-07",
+      "actor": "Reese Baker.",
+      "amount_usd": 146,
+      "note": "Card velocity (same card, high burst)"
+    },
+    {
+      "case_id": "FC-48066",
+      "kind": "FAST_TERMINATE",
+      "severity": "INFO",
+      "market": "MEX",
+      "opened": "2026-04-06",
+      "actor": "Jamie Carvalho.",
+      "amount_usd": 565,
+      "note": "Fast enroll-then-terminate cycle"
+    },
+    {
+      "case_id": "FC-86620",
+      "kind": "CARD_VELOCITY",
+      "severity": "HIGH",
+      "market": "NZL",
+      "opened": "2026-04-05",
+      "actor": "Dakota Singh.",
+      "amount_usd": 178,
+      "note": "Card velocity (same card, high burst)"
+    },
+    {
+      "case_id": "FC-57034",
+      "kind": "FAST_TERMINATE",
+      "severity": "INFO",
+      "market": "MEX",
+      "opened": "2026-04-03",
+      "actor": "Emerson Smith.",
+      "amount_usd": 1293,
+      "note": "Fast enroll-then-terminate cycle"
+    },
+    {
+      "case_id": "FC-60381",
+      "kind": "PROMO_STACKING",
+      "severity": "INFO",
+      "market": "GBR",
+      "opened": "2026-04-03",
+      "actor": "Alex Kim.",
+      "amount_usd": 703,
+      "note": "Repeated first-order-only promo abuse"
+    },
+    {
+      "case_id": "FC-98920",
+      "kind": "REFUND_RING",
+      "severity": "HIGH",
+      "market": "VNM",
+      "opened": "2026-03-31",
+      "actor": "Dakota Hernandez.",
+      "amount_usd": 714,
+      "note": "Refund ring pattern"
+    },
+    {
+      "case_id": "FC-77294",
+      "kind": "BONUS_TIMING",
+      "severity": "WARN",
+      "market": "GBR",
+      "opened": "2026-03-31",
+      "actor": "Jordan Garcia.",
+      "amount_usd": 325,
+      "note": "Suspicious order timing near bonus cutoff"
+    },
+    {
+      "case_id": "FC-34177",
+      "kind": "MISMATCHED_BIN",
+      "severity": "WARN",
+      "market": "NLD",
+      "opened": "2026-03-29",
+      "actor": "Logan Novak.",
+      "amount_usd": 1789,
+      "note": "BIN country mismatches shipping country"
+    },
+    {
+      "case_id": "FC-95021",
+      "kind": "MISMATCHED_BIN",
+      "severity": "WARN",
+      "market": "ITA",
+      "opened": "2026-03-27",
+      "actor": "Avery Smith.",
+      "amount_usd": 981,
+      "note": "BIN country mismatches shipping country"
+    },
+    {
+      "case_id": "FC-22329",
+      "kind": "REFUND_RING",
+      "severity": "HIGH",
+      "market": "TWN",
+      "opened": "2026-03-26",
+      "actor": "Alex Park.",
+      "amount_usd": 609,
+      "note": "Refund ring pattern"
+    },
+    {
+      "case_id": "FC-11593",
+      "kind": "STACKED_ENROLL",
+      "severity": "WARN",
+      "market": "VNM",
+      "opened": "2026-03-26",
+      "actor": "Blake Mueller.",
+      "amount_usd": 1325,
+      "note": "Stacked enrollments (one actor, multiple IDs)"
+    },
+    {
+      "case_id": "FC-86536",
+      "kind": "STACKED_ENROLL",
+      "severity": "WARN",
+      "market": "PHL",
+      "opened": "2026-03-26",
+      "actor": "Eden Rivera.",
+      "amount_usd": 939,
+      "note": "Stacked enrollments (one actor, multiple IDs)"
+    },
+    {
+      "case_id": "FC-88113",
+      "kind": "BONUS_TIMING",
+      "severity": "WARN",
+      "market": "BRA",
+      "opened": "2026-03-25",
+      "actor": "Sam Singh.",
+      "amount_usd": 225,
+      "note": "Suspicious order timing near bonus cutoff"
+    },
+    {
+      "case_id": "FC-94103",
+      "kind": "BONUS_TIMING",
+      "severity": "WARN",
+      "market": "IDN",
+      "opened": "2026-03-25",
+      "actor": "Rowan Park.",
+      "amount_usd": 230,
+      "note": "Suspicious order timing near bonus cutoff"
+    },
+    {
+      "case_id": "FC-28929",
+      "kind": "BONUS_TIMING",
+      "severity": "WARN",
+      "market": "ITA",
+      "opened": "2026-03-24",
+      "actor": "Reese Mertens.",
+      "amount_usd": 639,
+      "note": "Suspicious order timing near bonus cutoff"
+    },
+    {
+      "case_id": "FC-51204",
+      "kind": "FAST_TERMINATE",
+      "severity": "INFO",
+      "market": "MYS",
+      "opened": "2026-03-22",
+      "actor": "Jordan Lindgren.",
+      "amount_usd": 175,
+      "note": "Fast enroll-then-terminate cycle"
+    },
+    {
+      "case_id": "FC-34124",
+      "kind": "MISMATCHED_BIN",
+      "severity": "WARN",
+      "market": "NLD",
+      "opened": "2026-03-21",
+      "actor": "Riley Nguyen.",
+      "amount_usd": 1113,
+      "note": "BIN country mismatches shipping country"
+    },
+    {
+      "case_id": "FC-21062",
+      "kind": "REFUND_RING",
+      "severity": "HIGH",
+      "market": "JPN",
+      "opened": "2026-03-21",
+      "actor": "Morgan Singh.",
+      "amount_usd": 1297,
+      "note": "Refund ring pattern"
+    }
+  ],
+  "kpis": {
+    "signals_30d": 1806,
+    "high_severity_30d": 552,
+    "dollar_exposure_usd": 363807,
+    "open_cases": 25
+  }
+}

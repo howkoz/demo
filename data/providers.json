@@ -1,0 +1,508 @@
+{
+  "generated_at": "2026-04-19",
+  "providers": [
+    {
+      "name": "2C2P",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "PromptPay",
+        "QR",
+        "WeChat"
+      ],
+      "markets": [
+        "TH",
+        "MY",
+        "SG",
+        "PH",
+        "ID",
+        "VN"
+      ]
+    },
+    {
+      "name": "Adyen",
+      "status": "Evaluating",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "3DS",
+        "APMs"
+      ],
+      "markets": [
+        "EU",
+        "APAC",
+        "NA"
+      ]
+    },
+    {
+      "name": "Airwallex",
+      "status": "Evaluating",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "Bank Transfer"
+      ],
+      "markets": [
+        "HK",
+        "SG",
+        "AU"
+      ]
+    },
+    {
+      "name": "Authorize.net",
+      "status": "Live",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "ACH",
+        "eCheck"
+      ],
+      "markets": [
+        "US",
+        "CA"
+      ]
+    },
+    {
+      "name": "Banorte",
+      "status": "Live",
+      "region": "LATAM",
+      "methods": [
+        "Card",
+        "OXXO",
+        "SPEI"
+      ],
+      "markets": [
+        "MX"
+      ]
+    },
+    {
+      "name": "BillPlz",
+      "status": "Deprecated",
+      "region": "APAC",
+      "methods": [
+        "FPX",
+        "Card"
+      ],
+      "markets": [
+        "MY"
+      ]
+    },
+    {
+      "name": "BluePay",
+      "status": "Live",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "ACH"
+      ],
+      "markets": [
+        "US"
+      ]
+    },
+    {
+      "name": "Braintree",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "PayPal",
+        "Venmo",
+        "ApplePay"
+      ],
+      "markets": [
+        "US",
+        "CA",
+        "EU",
+        "AU"
+      ]
+    },
+    {
+      "name": "CCBill",
+      "status": "Evaluating",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "ACH"
+      ],
+      "markets": [
+        "Global"
+      ]
+    },
+    {
+      "name": "Checkout.com",
+      "status": "Evaluating",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "APMs"
+      ],
+      "markets": [
+        "EU",
+        "ME",
+        "APAC"
+      ]
+    },
+    {
+      "name": "CyberSource",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "3DS"
+      ],
+      "markets": [
+        "Global"
+      ]
+    },
+    {
+      "name": "Finix",
+      "status": "Evaluating",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "ACH"
+      ],
+      "markets": [
+        "US"
+      ]
+    },
+    {
+      "name": "First Data (Fiserv)",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "ACH"
+      ],
+      "markets": [
+        "US",
+        "EU"
+      ]
+    },
+    {
+      "name": "HyperSwitch",
+      "status": "Pilot",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "3DS",
+        "APMs",
+        "Orchestration"
+      ],
+      "markets": [
+        "MX",
+        "Global"
+      ]
+    },
+    {
+      "name": "iPay88",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "FPX",
+        "GrabPay"
+      ],
+      "markets": [
+        "MY",
+        "SG",
+        "ID",
+        "PH"
+      ]
+    },
+    {
+      "name": "KG Inicis",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "KakaoPay",
+        "NaverPay"
+      ],
+      "markets": [
+        "KR"
+      ]
+    },
+    {
+      "name": "Moka United",
+      "status": "Live",
+      "region": "EMEA",
+      "methods": [
+        "Card",
+        "Bank Transfer"
+      ],
+      "markets": [
+        "TR"
+      ]
+    },
+    {
+      "name": "Moneris",
+      "status": "Live",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "InteracDebit"
+      ],
+      "markets": [
+        "CA"
+      ]
+    },
+    {
+      "name": "Nexi",
+      "status": "Live",
+      "region": "EMEA",
+      "methods": [
+        "Card",
+        "SEPA"
+      ],
+      "markets": [
+        "IT"
+      ]
+    },
+    {
+      "name": "NICE Payments",
+      "status": "Evaluating",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "Bank Transfer"
+      ],
+      "markets": [
+        "KR"
+      ]
+    },
+    {
+      "name": "NMI",
+      "status": "Live",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "ACH",
+        "Recurring"
+      ],
+      "markets": [
+        "US",
+        "CA"
+      ]
+    },
+    {
+      "name": "Nuvei",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "APMs",
+        "Crypto"
+      ],
+      "markets": [
+        "CA",
+        "EU",
+        "LATAM"
+      ]
+    },
+    {
+      "name": "PayPal",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "PayPal",
+        "Card"
+      ],
+      "markets": [
+        "Global"
+      ]
+    },
+    {
+      "name": "PayU",
+      "status": "Evaluating",
+      "region": "LATAM",
+      "methods": [
+        "Card",
+        "Boleto",
+        "PIX"
+      ],
+      "markets": [
+        "BR",
+        "CO",
+        "AR"
+      ]
+    },
+    {
+      "name": "Rakuten Card",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "RakutenPay"
+      ],
+      "markets": [
+        "JP"
+      ]
+    },
+    {
+      "name": "SBPayment (SoftBank)",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "Konbini",
+        "Carrier"
+      ],
+      "markets": [
+        "JP"
+      ]
+    },
+    {
+      "name": "SecurionPay",
+      "status": "Deprecated",
+      "region": "EMEA",
+      "methods": [
+        "Card",
+        "3DS"
+      ],
+      "markets": [
+        "EU"
+      ]
+    },
+    {
+      "name": "Square",
+      "status": "Evaluating",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "CashApp"
+      ],
+      "markets": [
+        "US",
+        "AU",
+        "UK"
+      ]
+    },
+    {
+      "name": "Stax",
+      "status": "Evaluating",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "ACH"
+      ],
+      "markets": [
+        "US"
+      ]
+    },
+    {
+      "name": "Stripe",
+      "status": "Evaluating",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "3DS",
+        "APMs"
+      ],
+      "markets": [
+        "Global"
+      ]
+    },
+    {
+      "name": "Tebex",
+      "status": "Deprecated",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "PayPal"
+      ],
+      "markets": [
+        "Global"
+      ]
+    },
+    {
+      "name": "Truemed",
+      "status": "Live",
+      "region": "NA",
+      "methods": [
+        "HSA/FSA",
+        "Card"
+      ],
+      "markets": [
+        "US"
+      ]
+    },
+    {
+      "name": "TrustPayments",
+      "status": "Live",
+      "region": "EMEA",
+      "methods": [
+        "Card",
+        "3DS",
+        "APMs"
+      ],
+      "markets": [
+        "EU",
+        "UK"
+      ]
+    },
+    {
+      "name": "Vantiv (Worldpay)",
+      "status": "Live",
+      "region": "Global",
+      "methods": [
+        "Card",
+        "3DS"
+      ],
+      "markets": [
+        "US",
+        "EU",
+        "APAC"
+      ]
+    },
+    {
+      "name": "Veritrans",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "Card",
+        "Konbini"
+      ],
+      "markets": [
+        "JP"
+      ]
+    },
+    {
+      "name": "Vesta",
+      "status": "Evaluating",
+      "region": "NA",
+      "methods": [
+        "Card",
+        "Fraud-Guarantee"
+      ],
+      "markets": [
+        "US"
+      ]
+    },
+    {
+      "name": "WeChat Pay",
+      "status": "Live",
+      "region": "APAC",
+      "methods": [
+        "WeChat"
+      ],
+      "markets": [
+        "CN",
+        "HK"
+      ]
+    },
+    {
+      "name": "Worldline",
+      "status": "Evaluating",
+      "region": "EMEA",
+      "methods": [
+        "Card",
+        "APMs"
+      ],
+      "markets": [
+        "EU"
+      ]
+    }
+  ]
+}

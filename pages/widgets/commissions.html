@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commissions - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Payout trajectory</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Monthly payouts</span><span class="sub-chart-sub">USD</span></div>
+      <div class="sub-chart-body" id="chart-monthly"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Market payout intensity</span><span class="sub-chart-sub">% of approved volume</span></div>
+      <div class="sub-chart-body" id="chart-intensity"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Top earners</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th class="num">#</th><th>Distributor</th><th>Market</th>
+        <th class="num">Commission</th><th class="num">Rank &Delta;</th><th>Tier</th>
+      </tr></thead>
+      <tbody id="earners-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="sub-section-title"><span class="accent">03</span> &nbsp;Top enrollers</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th class="num">#</th><th>Enroller</th><th>Market</th>
+        <th class="num">New distributors</th><th class="num">Retention</th>
+      </tr></thead>
+      <tbody id="enrollers-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Commissions', 'distributor payouts &middot; enrollment engine', '#b894ff');
+
+  const com = state.commissions;
+  const monthly = com.monthly || [];
+  const earners = com.earners || [];
+  const enrollers = com.enrollers || [];
+  const payouts = com.market_payouts || [];
+
+  const latestMonth = monthly[monthly.length-1] || {};
+  const prevMonth = monthly[monthly.length-2] || {};
+  const mom = latestMonth.total_usd && prevMonth.total_usd ? (latestMonth.total_usd/prevMonth.total_usd - 1)*100 : 0;
+  const ytd = monthly.reduce((s,r)=>s+(r.total_usd||0),0);
+  const topEarner = earners[0];
+  const topEnr = enrollers[0];
+
+  document.getElementById('sub-kpis').innerHTML =
+    SubPage.kpiTile('Latest month', SubPage.fmtUsd(latestMonth.total_usd||0), latestMonth.month || '-', 'violet') +
+    SubPage.kpiTile('MoM change', (mom>=0?'+':'') + mom.toFixed(1)+'%', 'vs prior month', mom>=0?'good':'bad') +
+    SubPage.kpiTile('YTD paid', SubPage.fmtUsd(ytd), monthly.length + ' months', 'violet') +
+    SubPage.kpiTile('Active earners', SubPage.fmtInt(earners.length), 'in leaderboard', 'cool') +
+    SubPage.kpiTile('Top earner', topEarner?SubPage.fmtUsd(topEarner.commission_usd||topEarner.usd||0):'-', topEarner?topEarner.name:'', 'good') +
+    SubPage.kpiTile('Top enroller', topEnr?SubPage.fmtInt(topEnr.new_distributors||topEnr.new_dist||0):'-', topEnr?topEnr.name:'', 'good');
+
+  // Monthly chart
+  document.getElementById('chart-monthly').innerHTML='';
+  SubPage.renderChart('chart-monthly', {
+    chart:{type:'area', height:280},
+    series:[{name:'Payouts', data: monthly.map(r=>({x:r.month, y:r.total_usd||0}))}],
+    stroke:{curve:'smooth', width:2},
+    colors:['#b894ff'],
+    fill:{type:'gradient', gradient:{opacityFrom:0.4, opacityTo:0.02}},
+    xaxis:{type:'category'},
+    yaxis:{labels:{formatter:v=>SubPage.fmtUsd(v)}},
+    tooltip:{y:{formatter:v=>SubPage.fmtUsd(v)}}
+  });
+
+  // Market intensity
+  document.getElementById('chart-intensity').innerHTML='';
+  SubPage.renderChart('chart-intensity', {
+    chart:{type:'bar', height:280},
+    series:[{name:'Payout %', data: payouts.map(r=>({x:r.market, y:Number((r.payout_pct||0).toFixed(2))}))}],
+    plotOptions:{bar:{horizontal:true, borderRadius:2, barHeight:'65%'}},
+    colors:['#7cff9b'],
+    dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:v=>v.toFixed(1)+'%'},
+    xaxis:{labels:{formatter:v=>v.toFixed(0)+'%'}},
+    tooltip:{y:{formatter:v=>v.toFixed(2)+'%'}}
+  });
+
+  const c = document.getElementById('sub-callout');
+  c.className = 'sub-callout';
+  c.innerHTML =
+    '<div class="ico">INCENTIVE</div>' +
+    '<div class="msg">Commissions are the incentive engine that sustains distributor volume. ' +
+    'Markets with payout intensity above <b>45%</b> of approved volume warrant review against the compensation-plan schedule. ' +
+    'Latest month <b>' + SubPage.fmtUsd(latestMonth.total_usd||0) + '</b> posted ' + (mom>=0?'<b>+':'<b>') + mom.toFixed(1) + '%</b> vs prior month.</div>';
+
+  // Earners table
+  const earnerTbl = earners.slice(0,25).map((e,i) => {
+    const delta = e.rank_change||e.delta||0;
+    const dCls = delta>0?'up':delta<0?'down':'';
+    const tier = i < 3 ? '<span class="pill ok">EXEC</span>' : i < 10 ? '<span class="pill info">SENIOR</span>' : '<span class="pill warn">RISING</span>';
+    return '<tr>' +
+      '<td class="num">' + (i+1) + '</td>' +
+      '<td><b>' + e.name + '</b></td>' +
+      '<td>' + (e.market||'-') + '</td>' +
+      '<td class="num">' + SubPage.fmtUsd(e.commission_usd||e.usd||0) + '</td>' +
+      '<td class="num ' + dCls + '">' + (delta>0?'+':'') + delta + '</td>' +
+      '<td>' + tier + '</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('earners-tbody').innerHTML = earnerTbl || '<tr><td colspan="6" class="num" style="padding:20px;color:var(--ink-2)">No earners in snapshot.</td></tr>';
+
+  const enrollerTbl = enrollers.slice(0,25).map((e,i) =>
+    '<tr>' +
+      '<td class="num">' + (i+1) + '</td>' +
+      '<td><b>' + e.name + '</b></td>' +
+      '<td>' + (e.market||'-') + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(e.new_distributors||e.new_dist||0) + '</td>' +
+      '<td class="num">' + ((e.retention_pct||e.retention||0)*(e.retention_pct?1:100)).toFixed(1) + '%</td>' +
+    '</tr>'
+  ).join('');
+  document.getElementById('enrollers-tbody').innerHTML = enrollerTbl || '<tr><td colspan="5" class="num" style="padding:20px;color:var(--ink-2)">No enrollers in snapshot.</td></tr>';
+
+  document.getElementById('sub-controls').innerHTML =
+    '<label>View</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">All tiers</button>' +
+      '<button>EXEC</button>' +
+      '<button>SENIOR</button>' +
+      '<button>RISING</button>' +
+    '</div>' +
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-2)">latest month + 11mo trailing</span>';
+})();
+</script>
+</body>
+</html>

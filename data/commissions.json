@@ -1,0 +1,751 @@
+{
+  "generated_at": "2026-04-19",
+  "earners": [
+    {
+      "name": "Dakota Kowalski.",
+      "market": "SGP",
+      "amount_usd": 33188,
+      "rank_delta": -14,
+      "orders": 146,
+      "rank": 1
+    },
+    {
+      "name": "Drew Duval.",
+      "market": "KOR",
+      "amount_usd": 31398,
+      "rank_delta": 9,
+      "orders": 139,
+      "rank": 2
+    },
+    {
+      "name": "Jamie Nguyen.",
+      "market": "TWN",
+      "amount_usd": 30553,
+      "rank_delta": -10,
+      "orders": 383,
+      "rank": 3
+    },
+    {
+      "name": "Rowan Baker.",
+      "market": "PHL",
+      "amount_usd": 27926,
+      "rank_delta": 6,
+      "orders": 422,
+      "rank": 4
+    },
+    {
+      "name": "Reese Carvalho.",
+      "market": "IDN",
+      "amount_usd": 27771,
+      "rank_delta": 11,
+      "orders": 318,
+      "rank": 5
+    },
+    {
+      "name": "Remy Silva.",
+      "market": "TWN",
+      "amount_usd": 26670,
+      "rank_delta": 3,
+      "orders": 345,
+      "rank": 6
+    },
+    {
+      "name": "Jamie Yamada.",
+      "market": "PHL",
+      "amount_usd": 26297,
+      "rank_delta": 6,
+      "orders": 117,
+      "rank": 7
+    },
+    {
+      "name": "Emerson Garcia.",
+      "market": "NZL",
+      "amount_usd": 26165,
+      "rank_delta": 5,
+      "orders": 238,
+      "rank": 8
+    },
+    {
+      "name": "Ari Hernandez.",
+      "market": "MEX",
+      "amount_usd": 25724,
+      "rank_delta": 3,
+      "orders": 193,
+      "rank": 9
+    },
+    {
+      "name": "Dakota Garcia.",
+      "market": "JPN",
+      "amount_usd": 24875,
+      "rank_delta": -8,
+      "orders": 196,
+      "rank": 10
+    },
+    {
+      "name": "Blake Hernandez.",
+      "market": "NLD",
+      "amount_usd": 24223,
+      "rank_delta": -1,
+      "orders": 344,
+      "rank": 11
+    },
+    {
+      "name": "Blake Okafor.",
+      "market": "VNM",
+      "amount_usd": 23998,
+      "rank_delta": 4,
+      "orders": 111,
+      "rank": 12
+    },
+    {
+      "name": "Rowan Kowalski.",
+      "market": "NZL",
+      "amount_usd": 23478,
+      "rank_delta": 7,
+      "orders": 98,
+      "rank": 13
+    },
+    {
+      "name": "Riley Novak.",
+      "market": "TWN",
+      "amount_usd": 23182,
+      "rank_delta": -12,
+      "orders": 164,
+      "rank": 14
+    },
+    {
+      "name": "Sam Silva.",
+      "market": "MEX",
+      "amount_usd": 23075,
+      "rank_delta": 6,
+      "orders": 411,
+      "rank": 15
+    },
+    {
+      "name": "Avery Novak.",
+      "market": "HKG",
+      "amount_usd": 22931,
+      "rank_delta": 2,
+      "orders": 206,
+      "rank": 16
+    },
+    {
+      "name": "Rowan Wong.",
+      "market": "NZL",
+      "amount_usd": 22074,
+      "rank_delta": 7,
+      "orders": 313,
+      "rank": 17
+    },
+    {
+      "name": "Remy Kowalski.",
+      "market": "THA",
+      "amount_usd": 21740,
+      "rank_delta": 9,
+      "orders": 229,
+      "rank": 18
+    },
+    {
+      "name": "Harper Okafor.",
+      "market": "ITA",
+      "amount_usd": 21258,
+      "rank_delta": -7,
+      "orders": 56,
+      "rank": 19
+    },
+    {
+      "name": "Eden Hara.",
+      "market": "USA",
+      "amount_usd": 20875,
+      "rank_delta": -10,
+      "orders": 130,
+      "rank": 20
+    },
+    {
+      "name": "Kai Rossi.",
+      "market": "ITA",
+      "amount_usd": 20514,
+      "rank_delta": 12,
+      "orders": 317,
+      "rank": 21
+    },
+    {
+      "name": "Eden Johnson.",
+      "market": "BRA",
+      "amount_usd": 19835,
+      "rank_delta": -3,
+      "orders": 474,
+      "rank": 22
+    },
+    {
+      "name": "Dakota Chen.",
+      "market": "MYS",
+      "amount_usd": 18780,
+      "rank_delta": 5,
+      "orders": 118,
+      "rank": 23
+    },
+    {
+      "name": "Reese Kowalski.",
+      "market": "THA",
+      "amount_usd": 17850,
+      "rank_delta": 13,
+      "orders": 131,
+      "rank": 24
+    },
+    {
+      "name": "Cameron Dubois.",
+      "market": "SGP",
+      "amount_usd": 17471,
+      "rank_delta": -10,
+      "orders": 232,
+      "rank": 25
+    },
+    {
+      "name": "Sage Mertens.",
+      "market": "HKG",
+      "amount_usd": 17125,
+      "rank_delta": 2,
+      "orders": 289,
+      "rank": 26
+    },
+    {
+      "name": "Emerson Hara.",
+      "market": "MEX",
+      "amount_usd": 16582,
+      "rank_delta": 7,
+      "orders": 422,
+      "rank": 27
+    },
+    {
+      "name": "Parker Kowalski.",
+      "market": "JPN",
+      "amount_usd": 16196,
+      "rank_delta": -5,
+      "orders": 82,
+      "rank": 28
+    },
+    {
+      "name": "Remy Kowalski.",
+      "market": "PHL",
+      "amount_usd": 14752,
+      "rank_delta": 6,
+      "orders": 232,
+      "rank": 29
+    },
+    {
+      "name": "Jordan Rivera.",
+      "market": "DEU",
+      "amount_usd": 14453,
+      "rank_delta": -8,
+      "orders": 53,
+      "rank": 30
+    },
+    {
+      "name": "Ari Rossi.",
+      "market": "HKG",
+      "amount_usd": 14387,
+      "rank_delta": 2,
+      "orders": 445,
+      "rank": 31
+    },
+    {
+      "name": "Remy Kim.",
+      "market": "NZL",
+      "amount_usd": 12685,
+      "rank_delta": 2,
+      "orders": 372,
+      "rank": 32
+    },
+    {
+      "name": "Skyler Lindgren.",
+      "market": "IDN",
+      "amount_usd": 11920,
+      "rank_delta": -4,
+      "orders": 426,
+      "rank": 33
+    },
+    {
+      "name": "Jamie Silva.",
+      "market": "KOR",
+      "amount_usd": 11344,
+      "rank_delta": 0,
+      "orders": 147,
+      "rank": 34
+    },
+    {
+      "name": "Drew Garcia.",
+      "market": "GBR",
+      "amount_usd": 7737,
+      "rank_delta": -4,
+      "orders": 292,
+      "rank": 35
+    },
+    {
+      "name": "Harper Nguyen.",
+      "market": "AUS",
+      "amount_usd": 7318,
+      "rank_delta": -1,
+      "orders": 472,
+      "rank": 36
+    },
+    {
+      "name": "Drew Wong.",
+      "market": "GBR",
+      "amount_usd": 6614,
+      "rank_delta": -11,
+      "orders": 469,
+      "rank": 37
+    },
+    {
+      "name": "Kai Dubois.",
+      "market": "CAN",
+      "amount_usd": 2987,
+      "rank_delta": 4,
+      "orders": 444,
+      "rank": 38
+    },
+    {
+      "name": "Jordan Hara.",
+      "market": "MEX",
+      "amount_usd": 2500,
+      "rank_delta": -5,
+      "orders": 161,
+      "rank": 39
+    },
+    {
+      "name": "Jordan Park.",
+      "market": "HKG",
+      "amount_usd": 2500,
+      "rank_delta": 3,
+      "orders": 149,
+      "rank": 40
+    }
+  ],
+  "enrollers": [
+    {
+      "name": "Drew Hara.",
+      "market": "USA",
+      "new_distributors": 75,
+      "rank_delta": 4,
+      "retention_pct": 73.1,
+      "rank": 1
+    },
+    {
+      "name": "Jordan Baker.",
+      "market": "SGP",
+      "new_distributors": 67,
+      "rank_delta": 4,
+      "retention_pct": 46.2,
+      "rank": 2
+    },
+    {
+      "name": "Ari Carvalho.",
+      "market": "CAN",
+      "new_distributors": 65,
+      "rank_delta": -2,
+      "retention_pct": 50.3,
+      "rank": 3
+    },
+    {
+      "name": "Reese Carvalho.",
+      "market": "TWN",
+      "new_distributors": 64,
+      "rank_delta": 2,
+      "retention_pct": 67.5,
+      "rank": 4
+    },
+    {
+      "name": "Jamie Johnson.",
+      "market": "SGP",
+      "new_distributors": 54,
+      "rank_delta": 4,
+      "retention_pct": 52.0,
+      "rank": 5
+    },
+    {
+      "name": "Harper Rossi.",
+      "market": "KOR",
+      "new_distributors": 51,
+      "rank_delta": 5,
+      "retention_pct": 62.3,
+      "rank": 6
+    },
+    {
+      "name": "Skyler Kowalski.",
+      "market": "ITA",
+      "new_distributors": 50,
+      "rank_delta": 10,
+      "retention_pct": 56.9,
+      "rank": 7
+    },
+    {
+      "name": "Alex Hernandez.",
+      "market": "IDN",
+      "new_distributors": 49,
+      "rank_delta": 8,
+      "retention_pct": 57.4,
+      "rank": 8
+    },
+    {
+      "name": "Emerson Wong.",
+      "market": "NLD",
+      "new_distributors": 46,
+      "rank_delta": -1,
+      "retention_pct": 66.7,
+      "rank": 9
+    },
+    {
+      "name": "Reese Kim.",
+      "market": "MEX",
+      "new_distributors": 45,
+      "rank_delta": 9,
+      "retention_pct": 53.8,
+      "rank": 10
+    },
+    {
+      "name": "Logan Oswald.",
+      "market": "KOR",
+      "new_distributors": 45,
+      "rank_delta": 8,
+      "retention_pct": 54.4,
+      "rank": 11
+    },
+    {
+      "name": "Sam Abadi.",
+      "market": "AUS",
+      "new_distributors": 44,
+      "rank_delta": -7,
+      "retention_pct": 53.6,
+      "rank": 12
+    },
+    {
+      "name": "Morgan Rossi.",
+      "market": "HKG",
+      "new_distributors": 41,
+      "rank_delta": -4,
+      "retention_pct": 56.1,
+      "rank": 13
+    },
+    {
+      "name": "Jordan Tanaka.",
+      "market": "AUS",
+      "new_distributors": 40,
+      "rank_delta": 5,
+      "retention_pct": 76.7,
+      "rank": 14
+    },
+    {
+      "name": "Sam Smith.",
+      "market": "AUS",
+      "new_distributors": 37,
+      "rank_delta": 9,
+      "retention_pct": 86.5,
+      "rank": 15
+    },
+    {
+      "name": "Skyler Novak.",
+      "market": "USA",
+      "new_distributors": 37,
+      "rank_delta": -1,
+      "retention_pct": 67.9,
+      "rank": 16
+    },
+    {
+      "name": "Cameron Tanaka.",
+      "market": "JPN",
+      "new_distributors": 34,
+      "rank_delta": -4,
+      "retention_pct": 64.5,
+      "rank": 17
+    },
+    {
+      "name": "Emerson Novak.",
+      "market": "USA",
+      "new_distributors": 32,
+      "rank_delta": 9,
+      "retention_pct": 41.2,
+      "rank": 18
+    },
+    {
+      "name": "Sage Kim.",
+      "market": "JPN",
+      "new_distributors": 29,
+      "rank_delta": 0,
+      "retention_pct": 61.9,
+      "rank": 19
+    },
+    {
+      "name": "Dakota Park.",
+      "market": "VNM",
+      "new_distributors": 29,
+      "rank_delta": -5,
+      "retention_pct": 50.6,
+      "rank": 20
+    },
+    {
+      "name": "Quinn Lindgren.",
+      "market": "MEX",
+      "new_distributors": 29,
+      "rank_delta": 1,
+      "retention_pct": 71.5,
+      "rank": 21
+    },
+    {
+      "name": "Alex Novak.",
+      "market": "HKG",
+      "new_distributors": 28,
+      "rank_delta": -1,
+      "retention_pct": 65.0,
+      "rank": 22
+    },
+    {
+      "name": "Sasha Silva.",
+      "market": "DEU",
+      "new_distributors": 21,
+      "rank_delta": 0,
+      "retention_pct": 65.5,
+      "rank": 23
+    },
+    {
+      "name": "Marlowe Wong.",
+      "market": "VNM",
+      "new_distributors": 19,
+      "rank_delta": 5,
+      "retention_pct": 57.6,
+      "rank": 24
+    },
+    {
+      "name": "Emerson Abadi.",
+      "market": "GBR",
+      "new_distributors": 19,
+      "rank_delta": 10,
+      "retention_pct": 57.3,
+      "rank": 25
+    },
+    {
+      "name": "Parker Kowalski.",
+      "market": "MYS",
+      "new_distributors": 14,
+      "rank_delta": 2,
+      "retention_pct": 59.4,
+      "rank": 26
+    },
+    {
+      "name": "Cameron Dubois.",
+      "market": "PHL",
+      "new_distributors": 10,
+      "rank_delta": -3,
+      "retention_pct": 65.1,
+      "rank": 27
+    },
+    {
+      "name": "Harper Park.",
+      "market": "MYS",
+      "new_distributors": 9,
+      "rank_delta": -8,
+      "retention_pct": 74.4,
+      "rank": 28
+    },
+    {
+      "name": "Alex Lindgren.",
+      "market": "ITA",
+      "new_distributors": 9,
+      "rank_delta": -5,
+      "retention_pct": 80.2,
+      "rank": 29
+    },
+    {
+      "name": "Quinn Novak.",
+      "market": "THA",
+      "new_distributors": 3,
+      "rank_delta": 7,
+      "retention_pct": 58.9,
+      "rank": 30
+    }
+  ],
+  "market_payouts": [
+    {
+      "market": "USA",
+      "payout_pct": 35.1,
+      "payout_usd": 8985600,
+      "orders": 160000
+    },
+    {
+      "market": "KOR",
+      "payout_pct": 41.5,
+      "payout_usd": 5644000,
+      "orders": 85000
+    },
+    {
+      "market": "JPN",
+      "payout_pct": 26.4,
+      "payout_usd": 5068800,
+      "orders": 120000
+    },
+    {
+      "market": "TWN",
+      "payout_pct": 45.8,
+      "payout_usd": 3297600,
+      "orders": 45000
+    },
+    {
+      "market": "THA",
+      "payout_pct": 34.6,
+      "payout_usd": 2103680,
+      "orders": 38000
+    },
+    {
+      "market": "CAN",
+      "payout_pct": 37.1,
+      "payout_usd": 1899520,
+      "orders": 32000
+    },
+    {
+      "market": "AUS",
+      "payout_pct": 36.4,
+      "payout_usd": 1630720,
+      "orders": 28000
+    },
+    {
+      "market": "MEX",
+      "payout_pct": 35.7,
+      "payout_usd": 1599360,
+      "orders": 28000
+    },
+    {
+      "market": "DEU",
+      "payout_pct": 36.8,
+      "payout_usd": 1295360,
+      "orders": 22000
+    },
+    {
+      "market": "GBR",
+      "payout_pct": 30.2,
+      "payout_usd": 1256320,
+      "orders": 26000
+    },
+    {
+      "market": "PHL",
+      "payout_pct": 35.1,
+      "payout_usd": 1123200,
+      "orders": 20000
+    },
+    {
+      "market": "MYS",
+      "payout_pct": 28.5,
+      "payout_usd": 1094400,
+      "orders": 24000
+    },
+    {
+      "market": "HKG",
+      "payout_pct": 28.7,
+      "payout_usd": 1010240,
+      "orders": 22000
+    },
+    {
+      "market": "VNM",
+      "payout_pct": 51.0,
+      "payout_usd": 979200,
+      "orders": 12000
+    },
+    {
+      "market": "ITA",
+      "payout_pct": 37.0,
+      "payout_usd": 947200,
+      "orders": 16000
+    },
+    {
+      "market": "SGP",
+      "payout_pct": 29.9,
+      "payout_usd": 861120,
+      "orders": 18000
+    },
+    {
+      "market": "IDN",
+      "payout_pct": 35.4,
+      "payout_usd": 849600,
+      "orders": 15000
+    },
+    {
+      "market": "BRA",
+      "payout_pct": 24.6,
+      "payout_usd": 708480,
+      "orders": 18000
+    },
+    {
+      "market": "NLD",
+      "payout_pct": 29.5,
+      "payout_usd": 660800,
+      "orders": 14000
+    },
+    {
+      "market": "NZL",
+      "payout_pct": 25.0,
+      "payout_usd": 320000,
+      "orders": 8000
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2025-05",
+      "total_usd": 10012035,
+      "new_enrollees": 2376
+    },
+    {
+      "month": "2025-06",
+      "total_usd": 8327726,
+      "new_enrollees": 1872
+    },
+    {
+      "month": "2025-07",
+      "total_usd": 9630749,
+      "new_enrollees": 2147
+    },
+    {
+      "month": "2025-08",
+      "total_usd": 9381298,
+      "new_enrollees": 1421
+    },
+    {
+      "month": "2025-09",
+      "total_usd": 9918415,
+      "new_enrollees": 2477
+    },
+    {
+      "month": "2025-10",
+      "total_usd": 10161785,
+      "new_enrollees": 2416
+    },
+    {
+      "month": "2025-11",
+      "total_usd": 9145941,
+      "new_enrollees": 2867
+    },
+    {
+      "month": "2025-12",
+      "total_usd": 9909135,
+      "new_enrollees": 2467
+    },
+    {
+      "month": "2026-01",
+      "total_usd": 8823874,
+      "new_enrollees": 2221
+    },
+    {
+      "month": "2026-02",
+      "total_usd": 12211757,
+      "new_enrollees": 2257
+    },
+    {
+      "month": "2026-03",
+      "total_usd": 12712367,
+      "new_enrollees": 2442
+    },
+    {
+      "month": "2026-04",
+      "total_usd": 11834222,
+      "new_enrollees": 2332
+    }
+  ]
+}

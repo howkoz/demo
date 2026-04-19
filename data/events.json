@@ -1,0 +1,77 @@
+{
+  "events": [
+    {
+      "at": "2026-04-18T23:57",
+      "text": "Velocity spike detected on Truemed: +-2% vs 7d avg"
+    },
+    {
+      "at": "2026-04-18T23:55",
+      "text": "Retry ladder compressed on Trust: bucket 4-5 down -2.5%"
+    },
+    {
+      "at": "2026-04-18T22:40",
+      "text": "Velocity spike detected on Nuvei-CA: +0% vs 7d avg"
+    },
+    {
+      "at": "2026-04-18T22:36",
+      "text": "3DS challenge rate on NMI in NLD: 70.6%"
+    },
+    {
+      "at": "2026-04-18T22:30",
+      "text": "Recon job completed: 396k orders reconciled"
+    },
+    {
+      "at": "2026-04-18T21:40",
+      "text": "Approval rate in JPN climbed to 67.6% (+2.0 today)"
+    },
+    {
+      "at": "2026-04-18T21:07",
+      "text": "Statement reconciliation closed for Truemed / 2025-11"
+    },
+    {
+      "at": "2026-04-18T20:01",
+      "text": "Velocity spike detected on Trust: +-2% vs 7d avg"
+    },
+    {
+      "at": "2026-04-18T19:51",
+      "text": "Retry ladder compressed on NMI: bucket 4-5 down 4.0%"
+    },
+    {
+      "at": "2026-04-18T19:13",
+      "text": "3DS challenge rate on Worldpay in THA: 94.2%"
+    },
+    {
+      "at": "2026-04-18T18:36",
+      "text": "Chargeback on NMI in VNM: dispute_id DX-69962"
+    },
+    {
+      "at": "2026-04-18T18:31",
+      "text": "Chargeback on NMI in ITA: dispute_id DX-84002"
+    },
+    {
+      "at": "2026-04-18T18:09",
+      "text": "3DS challenge rate on Worldpay in DEU: 66.2%"
+    },
+    {
+      "at": "2026-04-18T16:45",
+      "text": "3DS challenge rate on Braintree in SGP: 68.3%"
+    },
+    {
+      "at": "2026-04-18T16:44",
+      "text": "Statement reconciliation closed for Worldpay / 2026-02"
+    },
+    {
+      "at": "2026-04-18T16:20",
+      "text": "Approval rate in THA climbed to 92.7% (-2.5 today)"
+    },
+    {
+      "at": "2026-04-18T16:17",
+      "text": "Approval rate in MYS climbed to 89.6% (-2.1 today)"
+    },
+    {
+      "at": "2026-04-18T12:38",
+      "text": "Statement reconciliation closed for Trust / 2026-01"
+    }
+  ],
+  "generated_at": "2026-04-19"
+}

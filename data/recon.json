@@ -1,0 +1,77 @@
+{
+  "monthly": [
+    {
+      "month": "2025-05",
+      "orders": 616173,
+      "orders_matched": 403487,
+      "match_pct": 65.48
+    },
+    {
+      "month": "2025-06",
+      "orders": 527264,
+      "orders_matched": 333108,
+      "match_pct": 63.18
+    },
+    {
+      "month": "2025-07",
+      "orders": 487805,
+      "orders_matched": 309898,
+      "match_pct": 63.53
+    },
+    {
+      "month": "2025-08",
+      "orders": 467295,
+      "orders_matched": 300812,
+      "match_pct": 64.37
+    },
+    {
+      "month": "2025-09",
+      "orders": 488362,
+      "orders_matched": 306760,
+      "match_pct": 62.81
+    },
+    {
+      "month": "2025-10",
+      "orders": 549616,
+      "orders_matched": 416921,
+      "match_pct": 75.86
+    },
+    {
+      "month": "2025-11",
+      "orders": 571532,
+      "orders_matched": 419191,
+      "match_pct": 73.35
+    },
+    {
+      "month": "2025-12",
+      "orders": 528974,
+      "orders_matched": 348958,
+      "match_pct": 65.97
+    },
+    {
+      "month": "2026-01",
+      "orders": 550381,
+      "orders_matched": 425910,
+      "match_pct": 77.38
+    },
+    {
+      "month": "2026-01",
+      "orders": 598191,
+      "orders_matched": 434116,
+      "match_pct": 72.57
+    },
+    {
+      "month": "2026-03",
+      "orders": 503288,
+      "orders_matched": 388409,
+      "match_pct": 77.17
+    },
+    {
+      "month": "2026-04",
+      "orders": 477875,
+      "orders_matched": 331538,
+      "match_pct": 69.38
+    }
+  ],
+  "generated_at": "2026-04-19"
+}
