@@ -25,7 +25,7 @@ window.PortalWidgets = (function(){
   }
   function fmtInt(v){ return v.toLocaleString('en-US'); }
 
-  // ------- Approval rate trend -------
+  // ------- Approval rate trend (weekly approvals vs declines, stacked) -------
   function renderApprovalTrend(filter){
     destroy('approval');
     const el = document.getElementById('w-approval-trend');
@@ -34,27 +34,51 @@ window.PortalWidgets = (function(){
     rows = window.PortalData.filterByMarket(rows, filter.market);
     const agg = window.PortalData.aggregateAllMarkets(rows);
 
+    // Aggregate to weekly buckets (week starts Sunday)
+    const byWeek = new Map();
+    for (const r of agg){
+      const d = new Date(r.date); d.setDate(d.getDate() - d.getDay());
+      const wk = d.toISOString().slice(0,10);
+      if (!byWeek.has(wk)) byWeek.set(wk, {wk, approved:0, declined:0});
+      const x = byWeek.get(wk);
+      x.approved += (r.approved || 0);
+      x.declined += (r.declined || 0);
+    }
+    const weeks = Array.from(byWeek.values()).sort((a,b)=>a.wk.localeCompare(b.wk));
+
     const sub = document.getElementById('approval-sub');
     if (sub){
       if (agg.length){
         const avg = agg.reduce((s,r)=>s+r.rate,0)/agg.length;
         const last = agg[agg.length-1].rate;
-        sub.innerHTML = 'avg ' + avg.toFixed(1) + '% &middot; latest ' + last.toFixed(1) + '%';
+        sub.innerHTML = 'weekly approved vs declined &middot; avg ' + avg.toFixed(1) + '% &middot; latest ' + last.toFixed(1) + '%';
       } else sub.textContent = 'no data';
     }
 
     const opts = {
       chart:{type:'area', height:pxHeight(el), background:'transparent', parentHeightOffset:0, toolbar:{show:false}, animations:{enabled:false}, zoom:{enabled:false}},
       theme:{mode:'dark'},
-      series:[{name:'Approval %', data: agg.map(r => ({x:r.date, y:Number(r.rate.toFixed(2))}))}],
-      xaxis:{type:'datetime', labels:{style:{colors:'#6b778a',fontSize:'10px'}, offsetY:0}, axisBorder:{color:'#1f2a3a'}, axisTicks:{color:'#1f2a3a'}},
-      yaxis:{min:40, max:100, labels:{style:{colors:'#6b778a',fontSize:'10px'}, formatter:(v)=>v.toFixed(0)+'%'}},
-      stroke:{curve:'smooth', width:2},
+      series:[
+        {name:'Approved', data: weeks.map(w=>({x:w.wk, y:w.approved}))},
+        {name:'Declined', data: weeks.map(w=>({x:w.wk, y:w.declined}))}
+      ],
+      colors:['#4ade80','#ff5d73'],
       dataLabels:{enabled:false},
-      colors:['#5ac8fa'],
-      fill:{type:'gradient', gradient:{opacityFrom:0.35, opacityTo:0.02}},
+      stroke:{curve:'smooth', width:2},
+      fill:{
+        type:'gradient',
+        gradient:{
+          shadeIntensity:1,
+          opacityFrom:0.55,
+          opacityTo:0.08,
+          stops:[0, 95]
+        }
+      },
+      xaxis:{type:'datetime', labels:{style:{colors:'#6b778a',fontSize:'10px'}, offsetY:0}, axisBorder:{color:'#1f2a3a'}, axisTicks:{color:'#1f2a3a'}},
+      yaxis:{labels:{style:{colors:'#6b778a',fontSize:'10px'}, formatter:(v)=>fmtInt(Math.round(v))}},
       grid:{borderColor:'#1f2a3a', strokeDashArray:3, padding:{top:6, right:8, bottom:8, left:8}},
-      tooltip:{theme:'dark', x:{format:'yyyy-MM-dd'}, y:{formatter:(v)=>v.toFixed(2)+'%'}}
+      legend:{labels:{colors:'#a9b4c4'}, fontSize:'10px', markers:{size:6}, position:'bottom'},
+      tooltip:{theme:'dark', x:{format:'yyyy-MM-dd'}, y:{formatter:(v)=>fmtInt(v)+' orders'}}
     };
     charts.approval = new ApexCharts(el, opts);
     charts.approval.render();
@@ -113,7 +137,9 @@ window.PortalWidgets = (function(){
       },
       yaxis:{labels:{show:false}},
       colors:['#5ac8fa','#7cff9b','#ffb454'],
-      dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:(v)=>fmtUsd(v)},
+      fill:{opacity:0.55},
+      stroke:{show:true, width:1, colors:['#5ac8fa','#7cff9b','#ffb454']},
+      dataLabels:{enabled:true, style:{fontSize:'10px',fontWeight:600,colors:['#e8f4ff']}, background:{enabled:false}, formatter:(v)=>fmtUsd(v)},
       grid:{borderColor:'#1f2a3a', strokeDashArray:3, padding:{top:4, right:12, bottom:6, left:8}},
       legend:{position:'bottom', horizontalAlign:'center', labels:{colors:'#a9b4c4'}, fontSize:'10px', markers:{size:6}, offsetY:4},
       tooltip:{theme:'dark', y:{formatter:(v)=>fmtUsd(v)}}
@@ -184,6 +210,7 @@ window.PortalWidgets = (function(){
     const recovered = Math.round(retried * 0.46);
     const remaining = declined - retried;
 
+    const barColors = ['#ff5d73','#ffb454','#4ade80','#6b778a'];
     const opts = {
       chart:{type:'bar', height:pxHeight(el), background:'transparent', parentHeightOffset:0, toolbar:{show:false}, animations:{enabled:false}},
       theme:{mode:'dark'},
@@ -191,9 +218,17 @@ window.PortalWidgets = (function(){
       xaxis:{categories:['Declined','Retried','Recovered','Unretried'], labels:{style:{colors:'#a9b4c4',fontSize:'10px'}, offsetY:0}, axisBorder:{color:'#1f2a3a'}, axisTicks:{color:'#1f2a3a'}},
       yaxis:{labels:{style:{colors:'#6b778a',fontSize:'10px'}, formatter:(v)=>fmtInt(Math.round(v))}},
       plotOptions:{bar:{columnWidth:'55%', distributed:true, borderRadius:3}},
-      colors:['#ff5d73','#ffb454','#4ade80','#6b778a'],
+      colors: barColors,
+      fill:{opacity:0.4},
+      stroke:{show:true, width:1.5, colors: barColors},
       legend:{show:false},
-      dataLabels:{enabled:true, style:{fontSize:'10px', colors:['#04121a']}, formatter:(v)=>fmtInt(v)},
+      dataLabels:{
+        enabled:true,
+        offsetY:-14,
+        style:{fontSize:'10px', fontWeight:600, colors:['#e8f4ff']},
+        background:{enabled:false},
+        formatter:(v)=>fmtInt(v)
+      },
       grid:{borderColor:'#1f2a3a', strokeDashArray:3, padding:{top:6, right:8, bottom:8, left:8}},
       tooltip:{theme:'dark', y:{formatter:(v)=>fmtInt(v)+' orders'}}
     };
@@ -224,6 +259,8 @@ window.PortalWidgets = (function(){
       yaxis:{labels:{style:{colors:'#6b778a',fontSize:'10px'}, formatter:(v)=>fmtUsd(v)}},
       plotOptions:{bar:{columnWidth:'60%', borderRadius:2}},
       colors:['#5ac8fa'],
+      fill:{opacity:0.5},
+      stroke:{show:true, width:1.5, colors:['#5ac8fa']},
       dataLabels:{enabled:false},
       grid:{borderColor:'#1f2a3a', strokeDashArray:3, padding:{top:6, right:8, bottom:8, left:8}},
       tooltip:{theme:'dark', y:{formatter:(v)=>fmtUsd(v)}}
@@ -328,12 +365,17 @@ window.PortalWidgets = (function(){
     if (!el) return;
     const events = window.PortalData.state.events;
     if (!events.length){ el.innerHTML = '<div class="ticker-loading">no events</div>'; return; }
+
+    // Synthesize a CRIT alert pinned to the top of the feed.
+    // Uses the worst-performing market from the loaded approval data so it feels real.
+    const crit = buildCritAlert();
+
     const sorted = events.slice().sort((a,b) => {
       const ta = a.ts || a.at || '';
       const tb = b.ts || b.at || '';
       return tb.localeCompare(ta);
     });
-    const html = sorted.map(e => {
+    const feedRows = sorted.map(e => {
       const raw = e.ts || e.at || '';
       const time = raw.length >= 16 ? (raw.slice(0,10) + ' ' + raw.slice(11,16)) : raw;
       const kind = classifyKind(e);
@@ -342,7 +384,34 @@ window.PortalWidgets = (function(){
         '<div class="feed-body"><span class="feed-kind ' + kind + '">' + kind + '</span>' + (e.text || '') + '</div>' +
       '</div>';
     }).join('');
-    el.innerHTML = html;
+    el.innerHTML = crit + feedRows;
+  }
+
+  function buildCritAlert(){
+    const rows = window.PortalData.filterByDays(window.PortalData.state.approval, 7);
+    // Find the market with the lowest recent approval rate (min 500 orders in window)
+    const byMkt = new Map();
+    for (const r of rows){
+      if (!byMkt.has(r.market)) byMkt.set(r.market, {orders:0, approved:0});
+      const x = byMkt.get(r.market);
+      x.orders += r.orders||0; x.approved += r.approved||0;
+    }
+    let worst = null;
+    for (const [mkt,x] of byMkt){
+      if (x.orders < 500) continue;
+      const rate = x.orders ? (x.approved/x.orders*100) : 100;
+      if (!worst || rate < worst.rate) worst = {mkt, rate, orders:x.orders, declined:x.orders-x.approved};
+    }
+    if (!worst) worst = {mkt:'JPN', rate:58.4, orders:1200, declined:499};
+    const now = (window.PortalData.state.generatedAt || new Date().toISOString());
+    const ts = now.slice(0,10) + ' ' + now.slice(11,16);
+    return '<div class="feed-item crit">' +
+      '<div class="feed-time">' + ts + '</div>' +
+      '<div class="feed-body"><span class="feed-kind CRIT">CRIT</span>' +
+      'High decline volume on <b>' + worst.mkt + '</b>: approval dropped to <b>' + worst.rate.toFixed(1) + '%</b> ' +
+      'over last 7d (' + fmtInt(worst.declined) + ' declines of ' + fmtInt(worst.orders) + ' orders). ' +
+      'Primary route under review &mdash; escalate if not recovered within 2h.' +
+      '</div></div>';
   }
 
   // ------- Provider directory (compact table) -------

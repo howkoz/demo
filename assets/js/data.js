@@ -26,17 +26,30 @@ window.PortalData = (function(){
     ITA:[41.9,12.6],  DEU:[51.2,10.5],  NLD:[52.1,5.3],   GBR:[54.0,-2.0]
   };
 
+  // Resolve data dir relative to the current page.
+  //   root index.html          -> data/
+  //   pages/*.html             -> ../data/
+  //   pages/widgets/*.html     -> ../../data/
+  //   pages/docs/*.html        -> ../../data/
+  function dataBase(){
+    const path = location.pathname.replace(/\\/g,'/');
+    if (/\/pages\/[^/]+\/[^/]+$/.test(path)) return '../../data/';
+    if (/\/pages\/[^/]+$/.test(path))        return '../data/';
+    return 'data/';
+  }
+  const DATA = dataBase();
+
   async function load(){
     const [markets, approval, gateways, recon, events, providers, commissions, fraud, rates] = await Promise.all([
-      fetch('data/markets.json').then(r => r.json()),
-      fetch('data/approval-rates.json').then(r => r.json()),
-      fetch('data/gateways.json').then(r => r.json()),
-      fetch('data/recon.json').then(r => r.json()),
-      fetch('data/events.json').then(r => r.json()),
-      fetch('data/providers.json').then(r => r.json()),
-      fetch('data/commissions.json').then(r => r.json()).catch(() => ({earners:[],enrollers:[],market_payouts:[],monthly:[]})),
-      fetch('data/fraud.json').then(r => r.json()).catch(() => ({signals:[],trends:[],cases:[],kpis:{}})),
-      fetch('data/rates.json').then(r => r.json()).catch(() => ({matrix:[],by_market:[],by_processor:[]}))
+      fetch(DATA+'markets.json').then(r => r.json()),
+      fetch(DATA+'approval-rates.json').then(r => r.json()),
+      fetch(DATA+'gateways.json').then(r => r.json()),
+      fetch(DATA+'recon.json').then(r => r.json()),
+      fetch(DATA+'events.json').then(r => r.json()),
+      fetch(DATA+'providers.json').then(r => r.json()),
+      fetch(DATA+'commissions.json').then(r => r.json()).catch(() => ({earners:[],enrollers:[],market_payouts:[],monthly:[]})),
+      fetch(DATA+'fraud.json').then(r => r.json()).catch(() => ({signals:[],trends:[],cases:[],kpis:{}})),
+      fetch(DATA+'rates.json').then(r => r.json()).catch(() => ({matrix:[],by_market:[],by_processor:[]}))
     ]);
 
     // Markets: attach lat/lon. Accept either {markets:[]} or [].

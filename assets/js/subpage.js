@@ -47,7 +47,11 @@ window.SubPage = (function(){
       tooltip:{theme:'dark'},
       xaxis:{labels:{style:{colors:'#6b778a',fontSize:'10px'}}, axisBorder:{color:'#1f2a3a'}, axisTicks:{color:'#1f2a3a'}},
       yaxis:{labels:{style:{colors:'#6b778a',fontSize:'10px'}}},
-      legend:{labels:{colors:'#a9b4c4'}, fontSize:'10px', markers:{size:6}}
+      legend:{labels:{colors:'#a9b4c4'}, fontSize:'10px', markers:{size:6}},
+      // Off by default - data labels on dense time-series overlap badly.
+      // Pages that want labels (horizontal bars, donuts) override with dataLabels:{enabled:true}.
+      dataLabels:{enabled:false},
+      stroke:{width:2}
     };
   }
   function merge(a, b){

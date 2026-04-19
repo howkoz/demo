@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Global Distribution - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Hub routing</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Orders routed per hub</span><span class="sub-chart-sub">served markets</span></div>
+      <div class="sub-chart-body" id="chart-hubs"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Revenue share by hub</span><span class="sub-chart-sub">USD, period total</span></div>
+      <div class="sub-chart-body" id="chart-revenue"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Hub &rarr; market registry</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Hub</th><th>Country</th><th>Markets served</th>
+        <th class="num">Orders</th><th class="num">Volume</th><th class="num">Share</th>
+      </tr></thead>
+      <tbody id="hubs-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Global Distribution', '4 hubs &middot; order routing topology', '#7cff9b');
+
+  // Map markets -> hub. Mirrors the topology from the globe widget.
+  const HUB_MAP = {
+    USA:'USA',CAN:'USA',MEX:'USA',BRA:'USA',
+    NLD:'NLD',GBR:'NLD',ITA:'NLD',DEU:'NLD',
+    SGP:'SGP',MYS:'SGP',IDN:'SGP',PHL:'SGP',VNM:'SGP',HKG:'SGP',TWN:'SGP',JPN:'SGP',KOR:'SGP',AUS:'SGP',NZL:'SGP',
+    THA:'THA'
+  };
+  const HUBS = {
+    USA:{name:'United States', lat:39.0, lon:-98.0, color:'#5ac8fa'},
+    NLD:{name:'Netherlands',    lat:52.1, lon:5.3,   color:'#7cff9b'},
+    SGP:{name:'Singapore',      lat:1.35, lon:103.8, color:'#ffb454'},
+    THA:{name:'Thailand',       lat:13.8, lon:100.5, color:'#b894ff'}
+  };
+
+  const rows = PortalData.filterByDays(state.approval, 365);
+  const byHub = new Map();
+  const markets = state.markets;
+  for (const m of markets){
+    const hub = HUB_MAP[m.code] || 'USA';
+    if (!byHub.has(hub)) byHub.set(hub, {hub, markets:[], orders:0, vol:0});
+    byHub.get(hub).markets.push(m.code);
+  }
+  for (const r of rows){
+    const hub = HUB_MAP[r.market] || 'USA';
+    const b = byHub.get(hub);
+    if (!b) continue;
+    b.orders += r.orders; b.vol += r.volume_usd;
+  }
+  const hubArr = Array.from(byHub.values()).sort((a,b)=>b.vol-a.vol);
+  const totalVol = hubArr.reduce((s,r)=>s+r.vol,0);
+  const totalOrd = hubArr.reduce((s,r)=>s+r.orders,0);
+
+  document.getElementById('sub-kpis').innerHTML =
+    SubPage.kpiTile('Hubs live', '4', 'US / NL / SG / TH', 'good') +
+    SubPage.kpiTile('Markets routed', SubPage.fmtInt(markets.length), 'across all hubs', 'cool') +
+    SubPage.kpiTile('Largest hub', hubArr[0]?hubArr[0].hub:'-', hubArr[0]?SubPage.fmtUsd(hubArr[0].vol):'', 'violet') +
+    SubPage.kpiTile('Portfolio orders', SubPage.fmtInt(totalOrd), '1Y rolling', 'cool') +
+    SubPage.kpiTile('Portfolio volume', SubPage.fmtUsd(totalVol), '1Y rolling', 'violet') +
+    SubPage.kpiTile('Avg markets / hub', (markets.length/4).toFixed(1), 'spread factor', 'good');
+
+  // Orders per hub
+  document.getElementById('chart-hubs').innerHTML='';
+  SubPage.renderChart('chart-hubs', {
+    chart:{type:'bar', height:280},
+    series:[{name:'Orders', data: hubArr.map(h=>({x:HUBS[h.hub].name, y:h.orders, fillColor:HUBS[h.hub].color}))}],
+    plotOptions:{bar:{columnWidth:'55%', borderRadius:3, distributed:true}},
+    colors: hubArr.map(h=>HUBS[h.hub].color),
+    legend:{show:false},
+    dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:v=>SubPage.fmtInt(v)},
+    tooltip:{y:{formatter:v=>SubPage.fmtInt(v)+' orders'}}
+  });
+
+  // Revenue donut
+  document.getElementById('chart-revenue').innerHTML='';
+  SubPage.renderChart('chart-revenue', {
+    chart:{type:'donut', height:280},
+    series: hubArr.map(h=>Math.round(h.vol)),
+    labels: hubArr.map(h=>HUBS[h.hub].name),
+    colors: hubArr.map(h=>HUBS[h.hub].color),
+    legend:{position:'bottom', labels:{colors:'#a9b4c4'}},
+    tooltip:{y:{formatter:v=>SubPage.fmtUsd(v)}},
+    dataLabels:{enabled:true, formatter:(v,opts)=>{
+      const val = hubArr[opts.seriesIndex].vol;
+      return (val/totalVol*100).toFixed(0) + '%';
+    }, style:{colors:['#04121a'], fontSize:'11px'}}
+  });
+
+  const c = document.getElementById('sub-callout');
+  c.className = 'sub-callout';
+  c.innerHTML =
+    '<div class="ico">TOPOLOGY</div>' +
+    '<div class="msg">The 4-hub topology minimizes latency for each region while keeping settlement rails consolidated. ' +
+    'Netherlands covers EU/UK, Singapore covers APAC, Thailand handles LATAM-adjacent CJK flows, US covers Americas. ' +
+    'A hub outage shifts routing to the nearest alternate &mdash; singapore &harr; thailand and netherlands &harr; us are the configured failover pairs.</div>';
+
+  // Hub table
+  const tbl = hubArr.map(h => {
+    return '<tr>' +
+      '<td><b style="color:' + HUBS[h.hub].color + '">' + HUBS[h.hub].name + '</b></td>' +
+      '<td>' + h.hub + '</td>' +
+      '<td style="font-family:var(--mono);font-size:10px">' + h.markets.join(', ') + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(h.orders) + '</td>' +
+      '<td class="num">' + SubPage.fmtUsd(h.vol) + '</td>' +
+      '<td class="num">' + (totalVol?(h.vol/totalVol*100).toFixed(1):0) + '%</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('hubs-tbody').innerHTML = tbl;
+
+  document.getElementById('sub-controls').innerHTML =
+    '<label>View</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">All hubs</button>' +
+      '<button>US hub</button>' +
+      '<button>NL hub</button>' +
+      '<button>SG hub</button>' +
+      '<button>TH hub</button>' +
+    '</div>' +
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-2)">active routing &middot; failover: US<->NL, SG<->TH</span>';
+})();
+</script>
+</body>
+</html>

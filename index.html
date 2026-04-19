@@ -53,9 +53,19 @@
   </div>
   <div class="filter-spacer"></div>
   <div class="filter-group">
+    <button id="customize-btn" class="btn-ghost">Widgets</button>
     <button id="reset-layout" class="btn-ghost">Reset Layout</button>
   </div>
 </section>
+
+<div id="customize-panel" class="customize-panel">
+  <div class="customize-head">
+    <span>CUSTOMIZE</span>
+    <button id="customize-close" class="customize-close">&times;</button>
+  </div>
+  <div class="customize-body" id="customize-body"></div>
+  <div class="customize-hint">drag widget head to move &middot; drag edges to resize &middot; layout auto-saves</div>
+</div>
 
 <main class="grid-wrap">
   <div class="grid-stack" id="grid">
@@ -71,9 +81,9 @@
     </div>
 
     <div class="grid-stack-item" gs-x="6" gs-y="0" gs-w="6" gs-h="4">
-      <div class="grid-stack-item-content widget" data-widget="approval-trend">
-        <div class="widget-head"><span class="widget-title">Approval Rate Trend</span><span class="widget-sub" id="approval-sub">&mdash;</span></div>
-        <div class="widget-body" id="w-approval-trend"></div>
+      <div class="grid-stack-item-content widget" data-widget="activity-feed">
+        <div class="widget-head"><span class="widget-title">Activity Feed</span><span class="widget-sub">recent ops events</span></div>
+        <div class="widget-body" id="w-activity-feed"></div>
       </div>
     </div>
 
@@ -88,9 +98,9 @@
     </div>
 
     <div class="grid-stack-item" gs-x="6" gs-y="4" gs-w="6" gs-h="4">
-      <div class="grid-stack-item-content widget" data-widget="activity-feed">
-        <div class="widget-head"><span class="widget-title">Activity Feed</span><span class="widget-sub">recent ops events</span></div>
-        <div class="widget-body" id="w-activity-feed"></div>
+      <div class="grid-stack-item-content widget" data-widget="approval-trend">
+        <div class="widget-head"><span class="widget-title">Approval Rate Trend</span><span class="widget-sub" id="approval-sub">&mdash;</span></div>
+        <div class="widget-body" id="w-approval-trend"></div>
       </div>
     </div>
 
