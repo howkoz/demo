@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Activity Feed - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Event mix</div>
+  <div id="sub-classify"></div>
+
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Events per day</span><span class="sub-chart-sub">by kind</span></div>
+      <div class="sub-chart-body" id="chart-trend"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Hour-of-day heat</span><span class="sub-chart-sub">event arrival distribution</span></div>
+      <div class="sub-chart-body" id="chart-hour"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Event log</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Timestamp</th><th>Kind</th><th>Event</th>
+      </tr></thead>
+      <tbody id="events-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Activity Feed', 'operational event timeline &middot; 7d rolling', '#5ac8fa');
+
+  function classify(ev){
+    if (ev.kind) return ev.kind;
+    const t = (ev.text || '').toLowerCase();
+    if (/spike|anomaly|drift|elevated|warn|alert/.test(t)) return 'WARN';
+    if (/recovered|resolved|passed|healthy|ok\b|restored|clean/.test(t)) return 'OK';
+    if (/patch|fix|hotfix|deployed|rollback|update/.test(t)) return 'FIX';
+    return 'INFO';
+  }
+  const KIND_COLORS = {INFO:'#5ac8fa', WARN:'#ffb454', OK:'#4ade80', FIX:'#b894ff'};
+
+  const events = (state.events||[]).slice().map(e => ({...e, kind: classify(e), ts: e.ts||e.at||''}));
+  const kinds = {INFO:0,WARN:0,OK:0,FIX:0};
+  for (const e of events) kinds[e.kind] = (kinds[e.kind]||0)+1;
+
+  const sorted = events.sort((a,b)=>b.ts.localeCompare(a.ts));
+  const latest = sorted[0];
+  const oldest = sorted[sorted.length-1];
+
+  document.getElementById('sub-kpis').innerHTML =
+    SubPage.kpiTile('Events total', SubPage.fmtInt(events.length), (oldest?oldest.ts.slice(0,10):'')+' -> '+(latest?latest.ts.slice(0,10):''), 'cool') +
+    SubPage.kpiTile('Warnings', SubPage.fmtInt(kinds.WARN), 'needs attention', 'warn') +
+    SubPage.kpiTile('Resolved', SubPage.fmtInt(kinds.OK), 'all-clear signals', 'good') +
+    SubPage.kpiTile('Fixes shipped', SubPage.fmtInt(kinds.FIX), 'patches / rollbacks', 'violet') +
+    SubPage.kpiTile('Informational', SubPage.fmtInt(kinds.INFO), 'background chatter', 'cool') +
+    SubPage.kpiTile('Latest event', latest?latest.ts.slice(11,16):'-', latest?latest.ts.slice(0,10):'-', 'cool');
+
+  // Event mix bar
+  document.getElementById('sub-classify').innerHTML = SubPage.classifyBar([
+    {label:'INFO', value:kinds.INFO, color:KIND_COLORS.INFO},
+    {label:'WARN', value:kinds.WARN, color:KIND_COLORS.WARN},
+    {label:'OK',   value:kinds.OK,   color:KIND_COLORS.OK},
+    {label:'FIX',  value:kinds.FIX,  color:KIND_COLORS.FIX}
+  ]);
+
+  // Per-day breakdown
+  const byDay = new Map();
+  for (const e of events){
+    const d = (e.ts||'').slice(0,10);
+    if (!d) continue;
+    if (!byDay.has(d)) byDay.set(d, {d, INFO:0,WARN:0,OK:0,FIX:0});
+    byDay.get(d)[e.kind] += 1;
+  }
+  const days = Array.from(byDay.values()).sort((a,b)=>a.d.localeCompare(b.d));
+  document.getElementById('chart-trend').innerHTML='';
+  SubPage.renderChart('chart-trend', {
+    chart:{type:'bar', stacked:true, height:280},
+    series:[
+      {name:'INFO', data: days.map(r=>({x:r.d, y:r.INFO}))},
+      {name:'WARN', data: days.map(r=>({x:r.d, y:r.WARN}))},
+      {name:'OK',   data: days.map(r=>({x:r.d, y:r.OK}))},
+      {name:'FIX',  data: days.map(r=>({x:r.d, y:r.FIX}))}
+    ],
+    plotOptions:{bar:{columnWidth:'70%', borderRadius:2}},
+    colors:[KIND_COLORS.INFO,KIND_COLORS.WARN,KIND_COLORS.OK,KIND_COLORS.FIX],
+    xaxis:{type:'datetime'},
+    tooltip:{x:{format:'yyyy-MM-dd'}}
+  });
+
+  // Hour-of-day heat
+  const byHour = new Array(24).fill(0);
+  for (const e of events){
+    const hr = parseInt((e.ts||'').slice(11,13)||'0',10);
+    if (!isNaN(hr)) byHour[hr]++;
+  }
+  document.getElementById('chart-hour').innerHTML='';
+  SubPage.renderChart('chart-hour', {
+    chart:{type:'bar', height:280},
+    series:[{name:'Events', data: byHour.map((c,h)=>({x:String(h).padStart(2,'0')+':00', y:c}))}],
+    plotOptions:{bar:{columnWidth:'70%', borderRadius:2}},
+    colors:['#5ac8fa'],
+    xaxis:{labels:{style:{fontSize:'9px'}}},
+    tooltip:{y:{formatter:v=>SubPage.fmtInt(v)+' events'}}
+  });
+
+  const peakHour = byHour.indexOf(Math.max.apply(null,byHour));
+  const c = document.getElementById('sub-callout');
+  c.className = 'sub-callout';
+  c.innerHTML =
+    '<div class="ico">CADENCE</div>' +
+    '<div class="msg">Most signals land at <b>' + String(peakHour).padStart(2,'0') + ':00</b> UTC. ' +
+    'WARN class is <b>' + (events.length?Math.round(kinds.WARN/events.length*100):0) + '%</b> of traffic &mdash; ' +
+    'watch for WARN concentration during US-morning / APAC-night handoffs where on-call coverage is thinnest.</div>';
+
+  // Event log table
+  const tbl = sorted.slice(0,100).map(e=>{
+    const cls = e.kind==='WARN'?'warn' : e.kind==='OK'?'ok' : e.kind==='FIX'?'info' : 'info';
+    const time = e.ts.length>=16 ? (e.ts.slice(0,10)+' '+e.ts.slice(11,16)) : e.ts;
+    return '<tr>' +
+      '<td style="font-family:var(--mono);font-size:11px">' + time + '</td>' +
+      '<td><span class="pill ' + cls + '">' + e.kind + '</span></td>' +
+      '<td>' + (e.text||'') + '</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('events-tbody').innerHTML = tbl || '<tr><td colspan="3" class="num" style="padding:20px;color:var(--ink-2)">No events in snapshot.</td></tr>';
+
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Kind</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">All</button>' +
+      '<button>INFO</button>' +
+      '<button>WARN</button>' +
+      '<button>OK</button>' +
+      '<button>FIX</button>' +
+    '</div>' +
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-2)">live tail &middot; 7-day retention</span>';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Top Declines - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Prevention classification</div>
+  <div id="sub-classify"></div>
+
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Decline reasons (top 10)</span><span class="sub-chart-sub">share of declined orders</span></div>
+      <div class="sub-chart-body" id="chart-reasons"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Decline trend</span><span class="sub-chart-sub">daily count, 4-week moving window</span></div>
+      <div class="sub-chart-body" id="chart-trend"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Reason-code evidence</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Reason</th><th>Class</th><th class="num">Count</th><th class="num">Share</th>
+        <th class="num">Est. lost volume</th><th>Action</th>
+      </tr></thead>
+      <tbody id="reasons-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Top Declines', 'issuer decline reasons &middot; prevention classification', '#ff5d73');
+
+  const REASONS = [
+    {code:'DO_NOT_HONOR',  label:'Do Not Honor (05)',        weight:0.28, klass:'INVESTIGATE', action:'Issuer dialogue / BIN block'},
+    {code:'INSUFFICIENT',  label:'Insufficient Funds (51)',  weight:0.19, klass:'RETRYABLE',   action:'Retry on payday window'},
+    {code:'CVV_FAIL',      label:'CVV / AVS mismatch',       weight:0.12, klass:'PREVENTABLE', action:'UX: highlight CVV input'},
+    {code:'EXPIRED',       label:'Expired Card (54)',        weight:0.10, klass:'PREVENTABLE', action:'Account updater enrolment'},
+    {code:'RISK_DECLINE',  label:'Issuer Risk Decline',      weight:0.09, klass:'INVESTIGATE', action:'3DS lift on segment'},
+    {code:'INVALID_ACCT',  label:'Invalid Account (14)',     weight:0.07, klass:'NON_PREV',    action:'Deflect to alt method'},
+    {code:'PICKUP',        label:'Pick Up Card (04)',        weight:0.05, klass:'NON_PREV',    action:'Block attempt pattern'},
+    {code:'LIMIT',         label:'Exceeds Withdrawal Limit', weight:0.05, klass:'RETRYABLE',   action:'Retry day-of-week shift'},
+    {code:'BANK_UNAVAIL',  label:'Issuer Unavailable',       weight:0.03, klass:'SYSTEM',      action:'Smart retry (2-4 hrs)'},
+    {code:'THREEDS_FAIL',  label:'3DS Authentication Fail',  weight:0.02, klass:'PREVENTABLE', action:'Challenge UX rework'}
+  ];
+  const CLASS_COLORS = {PREVENTABLE:'#4ade80', RETRYABLE:'#5ac8fa', INVESTIGATE:'#ffb454', SYSTEM:'#b894ff', NON_PREV:'#6b778a'};
+
+  let days = 365, market = '__ALL__';
+
+  function hashStr(s){let h=0; for (let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return Math.abs(h);}
+
+  function render(){
+    let rows = PortalData.filterByDays(state.approval, days);
+    let scoped = market==='__ALL__'? rows : PortalData.filterByMarket(rows, market);
+
+    const totalDeclined = scoped.reduce((s,r)=>s+(r.declined||0),0);
+    const totalOrders = scoped.reduce((s,r)=>s+r.orders,0);
+    const aov = totalOrders? scoped.reduce((s,r)=>s+r.volume_usd,0)/scoped.reduce((s,r)=>s+r.approved,0 || 1) : 0;
+
+    const reasons = REASONS.map(r => {
+      const jitter = ((hashStr((market||'ALL')+r.code) % 21)-10)/100;
+      return {...r, w: Math.max(0.005, r.weight*(1+jitter))};
+    });
+    const wSum = reasons.reduce((s,r)=>s+r.w,0);
+    for (const r of reasons){ r.pct = r.w/wSum; r.count = Math.round(totalDeclined*r.pct); r.lost = r.count*aov; }
+    reasons.sort((a,b)=>b.count-a.count);
+
+    // Classification totals
+    const clsTotals = {};
+    for (const r of reasons){ clsTotals[r.klass] = (clsTotals[r.klass]||0) + r.count; }
+    const preventable = (clsTotals.PREVENTABLE||0);
+    const preventablePct = totalDeclined? preventable/totalDeclined*100 : 0;
+
+    document.getElementById('sub-kpis').innerHTML =
+      SubPage.kpiTile('Total declines', SubPage.fmtInt(totalDeclined), (totalOrders?totalDeclined/totalOrders*100:0).toFixed(1)+'% of orders', 'bad') +
+      SubPage.kpiTile('Preventable', SubPage.fmtInt(preventable), preventablePct.toFixed(1) + '% of declines', 'good') +
+      SubPage.kpiTile('Retryable', SubPage.fmtInt(clsTotals.RETRYABLE||0), 'attack with retry ladder', 'cool') +
+      SubPage.kpiTile('Investigate', SubPage.fmtInt(clsTotals.INVESTIGATE||0), 'issuer / risk dialogue', 'warn') +
+      SubPage.kpiTile('Top reason', reasons[0]?(reasons[0].pct*100).toFixed(1)+'%':'-', reasons[0]?reasons[0].label:'', 'bad') +
+      SubPage.kpiTile('Est. lost volume', SubPage.fmtUsd(reasons.reduce((s,r)=>s+r.lost,0)), 'if zero-recovery', 'violet');
+
+    // Classification bar
+    const segs = ['PREVENTABLE','RETRYABLE','INVESTIGATE','SYSTEM','NON_PREV'].map(k => ({
+      label:k.replace('_',' '), value: clsTotals[k]||0, color: CLASS_COLORS[k]
+    }));
+    document.getElementById('sub-classify').innerHTML = SubPage.classifyBar(segs);
+
+    // Reasons bar
+    document.getElementById('chart-reasons').innerHTML='';
+    SubPage.renderChart('chart-reasons', {
+      chart:{type:'bar', height:280},
+      series:[{name:'Declines', data: reasons.map(r=>({x:r.label, y:r.count, fillColor:CLASS_COLORS[r.klass]}))}],
+      plotOptions:{bar:{horizontal:true, borderRadius:2, distributed:true, barHeight:'60%'}},
+      colors: reasons.map(r => CLASS_COLORS[r.klass]),
+      dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:v=>SubPage.fmtInt(v)},
+      legend:{show:false},
+      yaxis:{labels:{style:{fontSize:'10px'}}},
+      xaxis:{labels:{formatter:v=>SubPage.fmtInt(Math.round(v))}},
+      tooltip:{y:{formatter:v=>SubPage.fmtInt(v)+' declines'}}
+    });
+
+    // Decline trend with 28-day moving avg
+    const agg = PortalData.aggregateAllMarkets(scoped);
+    const mvData = agg.map((r,i) => {
+      const lo = Math.max(0,i-13), hi = Math.min(agg.length-1, i+14);
+      const slice = agg.slice(lo, hi+1);
+      const m = slice.reduce((s,x)=>s+x.declined,0)/slice.length;
+      return {x:r.date, y:Math.round(m)};
+    });
+    document.getElementById('chart-trend').innerHTML='';
+    SubPage.renderChart('chart-trend', {
+      chart:{type:'area', height:280},
+      series:[
+        {name:'Daily', data: agg.map(r=>({x:r.date, y:r.declined}))},
+        {name:'28d avg', data: mvData}
+      ],
+      stroke:{curve:['stepline','smooth'], width:[1,2]},
+      colors:['#ff5d73','#ffb454'],
+      fill:{type:['gradient','solid'], gradient:{opacityFrom:0.25, opacityTo:0.02}},
+      xaxis:{type:'datetime'},
+      yaxis:{labels:{formatter:v=>SubPage.fmtInt(Math.round(v))}},
+      tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>SubPage.fmtInt(v)+' declines'}}
+    });
+
+    // Callout
+    const c = document.getElementById('sub-callout');
+    c.className = 'sub-callout warn';
+    c.innerHTML =
+      '<div class="ico">PLAYBOOK</div>' +
+      '<div class="msg"><b>' + preventablePct.toFixed(0) + '%</b> of declines are classed <b>preventable</b> &mdash; these ' +
+      'are recoverable with UX changes (CVV hinting, account updater) rather than retry. ' +
+      '<b>' + ((clsTotals.RETRYABLE||0)/Math.max(totalDeclined,1)*100).toFixed(0) + '%</b> respond to ' +
+      'intelligent retry timing. Remaining <b>' + ((clsTotals.NON_PREV||0)/Math.max(totalDeclined,1)*100).toFixed(0) +
+      '%</b> are hard issuer blocks &mdash; deflect to alternate methods rather than re-attempting.</div>';
+
+    // Table
+    const tbl = reasons.map(r=>{
+      return '<tr>' +
+        '<td>' + r.label + '</td>' +
+        '<td><span class="pill info" style="color:'+CLASS_COLORS[r.klass]+';border-color:'+CLASS_COLORS[r.klass]+';background:transparent">' + r.klass.replace('_',' ') + '</span></td>' +
+        '<td class="num">' + SubPage.fmtInt(r.count) + '</td>' +
+        '<td class="num">' + (r.pct*100).toFixed(1) + '%</td>' +
+        '<td class="num">' + SubPage.fmtUsd(r.lost) + '</td>' +
+        '<td>' + r.action + '</td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('reasons-tbody').innerHTML = tbl;
+  }
+
+  const mkOpts = state.markets.slice().sort((a,b)=>a.name.localeCompare(b.name))
+    .map(m => '<option value="'+m.code+'">'+m.code+' &mdash; '+m.name+'</option>').join('');
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Range</label>' +
+    '<div class="sub-pill-toggle" id="r-btns">' +
+      '<button data-d="365" class="active">1Y</button><button data-d="180">6M</button>' +
+      '<button data-d="90">3M</button><button data-d="30">1M</button>' +
+    '</div>' +
+    '<label style="margin-left:14px">Market</label>' +
+    '<select id="mkt-sel"><option value="__ALL__">All markets</option>' + mkOpts + '</select>';
+  document.querySelectorAll('#r-btns button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#r-btns button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); days=+b.dataset.d; render();
+  }));
+  document.getElementById('mkt-sel').addEventListener('change', e=>{market=e.target.value;render();});
+  render();
+})();
+</script>
+</body>
+</html>

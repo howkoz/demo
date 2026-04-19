@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Approval Rate Trend - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">9094</span>
+    <span class="title">Payment Operations Command Center</span>
+    <span class="demo-badge">DEMO &middot; synthetic data</span>
+  </div>
+  <nav class="topnav">
+    <a href="../../index.html">Command Center</a>
+    <a href="../directory.html">Provider Directory</a>
+    <a href="../docs/index.html">Docs</a>
+    <a href="../../schema.html">Backend Schema</a>
+  </nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Trend &amp; composition</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Daily approval rate</span><span class="sub-chart-sub" id="trend-sub">&mdash;</span></div>
+      <div class="sub-chart-body" id="chart-trend"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Approvals vs declines (weekly)</span><span class="sub-chart-sub">stacked, orders</span></div>
+      <div class="sub-chart-body" id="chart-stacked"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Market breakdown</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table" id="market-table">
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th class="num">Approval %</th>
+          <th class="num">Orders</th>
+          <th class="num">Approved</th>
+          <th class="num">Declined</th>
+          <th class="num">Volume (USD)</th>
+          <th class="num">7d &Delta;</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="market-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer">
+  <span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span>
+  <span class="footer-right">country &amp; provider names are real &middot; metrics are not</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Approval Rate Trend', 'per-market drill &middot; 365d window', '#5ac8fa');
+
+  let days = 365, market = '__ALL__';
+
+  function render(){
+    let rows = PortalData.filterByDays(state.approval, days);
+    if (market !== '__ALL__') rows = PortalData.filterByMarket(rows, market);
+    const agg = PortalData.aggregateAllMarkets(rows);
+
+    // KPIs
+    const latest = agg[agg.length-1] || {rate:0,orders:0,approved:0,declined:0,volume_usd:0};
+    const avg = agg.length ? agg.reduce((s,r)=>s+r.rate,0)/agg.length : 0;
+    const firstQuartile = agg.slice(0, Math.max(1, Math.floor(agg.length/4)));
+    const firstAvg = firstQuartile.length ? firstQuartile.reduce((s,r)=>s+r.rate,0)/firstQuartile.length : 0;
+    const deltaPts = latest.rate - firstAvg;
+    const totalOrders = agg.reduce((s,r)=>s+r.orders,0);
+    const totalApproved = agg.reduce((s,r)=>s+r.approved,0);
+    const totalDeclined = agg.reduce((s,r)=>s+r.declined,0);
+    const totalVolume = agg.reduce((s,r)=>s+r.volume_usd,0);
+
+    document.getElementById('sub-kpis').innerHTML =
+      SubPage.kpiTile('Latest rate', SubPage.fmtPct(latest.rate), 'period avg ' + SubPage.fmtPct(avg), latest.rate >= 75 ? 'good' : latest.rate >= 60 ? 'warn' : 'bad') +
+      SubPage.kpiTile('Period shift', (deltaPts>=0?'+':'') + deltaPts.toFixed(1)+' pts', 'vs first quartile', deltaPts>=0?'good':'bad') +
+      SubPage.kpiTile('Orders', SubPage.fmtInt(totalOrders), 'across window', 'cool') +
+      SubPage.kpiTile('Approved', SubPage.fmtInt(totalApproved), SubPage.fmtPct(totalOrders?totalApproved/totalOrders*100:0) + ' of total', 'good') +
+      SubPage.kpiTile('Declined', SubPage.fmtInt(totalDeclined), SubPage.fmtPct(totalOrders?totalDeclined/totalOrders*100:0) + ' of total', 'bad') +
+      SubPage.kpiTile('Volume captured', SubPage.fmtUsd(totalVolume), 'from approved txns', 'violet');
+
+    document.getElementById('trend-sub').textContent = agg.length + ' days';
+
+    // Trend chart
+    const trendEl = document.getElementById('chart-trend');
+    trendEl.innerHTML = '';
+    SubPage.renderChart('chart-trend', {
+      chart:{type:'area', height: 260},
+      series:[{name:'Approval %', data: agg.map(r=>({x:r.date, y:Number(r.rate.toFixed(2))}))}],
+      stroke:{curve:'smooth', width:2},
+      colors:['#5ac8fa'],
+      fill:{type:'gradient', gradient:{opacityFrom:0.4, opacityTo:0.02}},
+      xaxis:{type:'datetime'},
+      yaxis:{min:40, max:100, labels:{formatter:v=>v.toFixed(0)+'%'}},
+      tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>v.toFixed(2)+'%'}}
+    });
+
+    // Weekly stacked approved vs declined
+    const byWeek = new Map();
+    for (const r of agg){
+      const d = new Date(r.date); d.setDate(d.getDate() - d.getDay());
+      const wk = d.toISOString().slice(0,10);
+      if (!byWeek.has(wk)) byWeek.set(wk, {wk, approved:0, declined:0});
+      const x = byWeek.get(wk);
+      x.approved += r.approved; x.declined += r.declined;
+    }
+    const weeks = Array.from(byWeek.values()).sort((a,b)=>a.wk.localeCompare(b.wk));
+    const stackedEl = document.getElementById('chart-stacked');
+    stackedEl.innerHTML = '';
+    SubPage.renderChart('chart-stacked', {
+      chart:{type:'bar', stacked:true, height:260},
+      series:[
+        {name:'Approved', data:weeks.map(w=>({x:w.wk, y:w.approved}))},
+        {name:'Declined', data:weeks.map(w=>({x:w.wk, y:w.declined}))}
+      ],
+      plotOptions:{bar:{columnWidth:'65%', borderRadius:2}},
+      colors:['#4ade80','#ff5d73'],
+      xaxis:{type:'datetime'},
+      tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>SubPage.fmtInt(v)+' orders'}}
+    });
+
+    // Insight
+    const worst = latest.rate < 60;
+    const best = latest.rate >= 85;
+    const c = document.getElementById('sub-callout');
+    c.className = 'sub-callout' + (worst?' bad':best?'':' warn');
+    c.innerHTML =
+      '<div class="ico">' + (worst?'RISK':best?'OK':'WATCH') + '</div>' +
+      '<div class="msg">Latest approval <b>' + SubPage.fmtPct(latest.rate) + '</b> ' +
+      (deltaPts>=0?'is up <b>+':'is down <b>') + deltaPts.toFixed(1) + ' pts</b> vs the first quartile of this window. ' +
+      (worst ? 'Run a BIN-level decline audit and check issuer-risk blocks.' :
+       best ? 'Sustained performance. Keep route allocations steady.' :
+              'Watchlist: examine the decline-reason tail for drift.') +
+      '</div>';
+
+    // Market table
+    let allRows = PortalData.filterByDays(state.approval, days);
+    const byMkt = new Map();
+    for (const r of allRows){
+      if (!byMkt.has(r.market)) byMkt.set(r.market, {market:r.market, orders:0, approved:0, declined:0, volume:0, last7:[], earlier:[]});
+      const b = byMkt.get(r.market);
+      b.orders += r.orders; b.approved += r.approved; b.declined += r.declined; b.volume += r.volume_usd;
+    }
+    // 7d delta per market
+    const last7Cutoff = allRows.length ? (()=>{ const d=new Date(allRows.reduce((m,r)=>r.date>m?r.date:m, allRows[0].date)); d.setDate(d.getDate()-6); return d.toISOString().slice(0,10);})() : null;
+    for (const r of allRows){
+      const b = byMkt.get(r.market);
+      if (!b) continue;
+      if (last7Cutoff && r.date >= last7Cutoff) b.last7.push(r);
+      else b.earlier.push(r);
+    }
+    const table = Array.from(byMkt.values()).map(b => {
+      const rate = b.orders ? b.approved/b.orders*100 : 0;
+      const l7 = b.last7.reduce((a,r)=>{a.o+=r.orders;a.a+=r.approved;return a;},{o:0,a:0});
+      const earlier = b.earlier.reduce((a,r)=>{a.o+=r.orders;a.a+=r.approved;return a;},{o:0,a:0});
+      const l7Rate = l7.o?l7.a/l7.o*100:rate;
+      const baseRate = earlier.o?earlier.a/earlier.o*100:rate;
+      const delta = l7Rate - baseRate;
+      b.rate = rate; b.delta = delta; b.l7Rate = l7Rate;
+      return b;
+    }).sort((a,b) => a.rate - b.rate);
+
+    document.getElementById('market-tbody').innerHTML = table.map(b => {
+      const status = b.rate >= 80 ? '<span class="pill ok">HEALTHY</span>' :
+                     b.rate >= 65 ? '<span class="pill warn">WATCH</span>' :
+                     '<span class="pill bad">AT RISK</span>';
+      const dCls = b.delta >= 0 ? 'up' : 'down';
+      const dStr = (b.delta>=0?'+':'') + b.delta.toFixed(1) + ' pts';
+      return '<tr>' +
+        '<td><b>' + b.market + '</b></td>' +
+        '<td class="num">' + b.rate.toFixed(2) + '%</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.orders) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.approved) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.declined) + '</td>' +
+        '<td class="num">' + SubPage.fmtUsd(b.volume) + '</td>' +
+        '<td class="num ' + dCls + '">' + dStr + '</td>' +
+        '<td>' + status + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  // Controls
+  const mkOpts = state.markets.slice().sort((a,b)=>a.name.localeCompare(b.name))
+    .map(m => '<option value="'+m.code+'">'+m.code+' &mdash; '+m.name+'</option>').join('');
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Range</label>' +
+    '<div class="sub-pill-toggle" id="r-btns">' +
+      '<button data-d="365" class="active">1Y</button>' +
+      '<button data-d="180">6M</button>' +
+      '<button data-d="90">3M</button>' +
+      '<button data-d="30">1M</button>' +
+    '</div>' +
+    '<label style="margin-left:14px">Market</label>' +
+    '<select id="mkt-sel"><option value="__ALL__">All markets</option>' + mkOpts + '</select>';
+  document.querySelectorAll('#r-btns button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#r-btns button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); days = +b.dataset.d; render();
+    });
+  });
+  document.getElementById('mkt-sel').addEventListener('change', (e) => { market = e.target.value; render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Processing / Refund / Chargeback Rates - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Rate distribution</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Processing vs refund vs chargeback</span><span class="sub-chart-sub">by market, last 30d</span></div>
+      <div class="sub-chart-body" id="chart-grouped"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Processor matrix (approval %)</span><span class="sub-chart-sub">top processors</span></div>
+      <div class="sub-chart-body" id="chart-proc"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Market &times; processor matrix</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Market</th><th>Processor</th><th class="num">Processing %</th>
+        <th class="num">Refund %</th><th class="num">CB bps</th>
+        <th class="num">Orders</th><th class="num">Approved</th><th>Health</th>
+      </tr></thead>
+      <tbody id="rates-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Processing / Refund / Chargeback Rates', 'by market &times; by processor', '#5ac8fa');
+
+  const matrix = state.rates.matrix || [];
+  const byMarket = state.rates.by_market || [];
+  const byProc   = state.rates.by_processor || [];
+
+  // KPIs
+  const blendedProc = byMarket.length ? byMarket.reduce((s,r)=>s+(r.processing_pct||r.approval_pct||0),0)/byMarket.length : 0;
+  const blendedRef  = byMarket.length ? byMarket.reduce((s,r)=>s+(r.refund_pct||0),0)/byMarket.length : 0;
+  const blendedCb   = byMarket.length ? byMarket.reduce((s,r)=>s+(r.cb_bps||0),0)/byMarket.length : 0;
+  const healthy = byMarket.filter(r => (r.processing_pct||r.approval_pct||0) >= 80).length;
+  const atRisk  = byMarket.filter(r => (r.processing_pct||r.approval_pct||0) < 65).length;
+
+  document.getElementById('sub-kpis').innerHTML =
+    SubPage.kpiTile('Blended processing', blendedProc.toFixed(1)+'%', 'across all markets', blendedProc>=75?'good':blendedProc>=60?'warn':'bad') +
+    SubPage.kpiTile('Blended refund', blendedRef.toFixed(2)+'%', 'of orders', 'warn') +
+    SubPage.kpiTile('Blended CB', blendedCb.toFixed(1)+' bps', 'of volume', blendedCb<50?'good':blendedCb<100?'warn':'bad') +
+    SubPage.kpiTile('Healthy markets', SubPage.fmtInt(healthy), 'processing >= 80%', 'good') +
+    SubPage.kpiTile('At-risk markets', SubPage.fmtInt(atRisk), 'processing < 65%', 'bad') +
+    SubPage.kpiTile('Processors tracked', SubPage.fmtInt(byProc.length), 'across portfolio', 'cool');
+
+  // Grouped bars: processing / refund / cb per market (last 15)
+  const top = byMarket.slice().sort((a,b)=>b.orders-a.orders).slice(0,15);
+  document.getElementById('chart-grouped').innerHTML='';
+  SubPage.renderChart('chart-grouped', {
+    chart:{type:'bar', height:300},
+    series:[
+      {name:'Processing %', data: top.map(r=>({x:r.market, y:Number((r.processing_pct||r.approval_pct||0).toFixed(2))}))},
+      {name:'Refund %',     data: top.map(r=>({x:r.market, y:Number((r.refund_pct||0).toFixed(2))}))},
+      {name:'CB bps / 100', data: top.map(r=>({x:r.market, y:Number((((r.cb_bps)||0)/100).toFixed(2))}))}
+    ],
+    plotOptions:{bar:{columnWidth:'65%', borderRadius:2}},
+    colors:['#4ade80','#ffb454','#ff5d73'],
+    yaxis:{labels:{formatter:v=>v.toFixed(0)+'%'}},
+    tooltip:{shared:true, intersect:false}
+  });
+
+  // Processor bar
+  document.getElementById('chart-proc').innerHTML='';
+  SubPage.renderChart('chart-proc', {
+    chart:{type:'bar', height:300},
+    series:[{name:'Processing %', data: byProc.map(r=>({x:r.processor, y:Number((r.processing_pct||r.approval_pct||0).toFixed(2))}))}],
+    plotOptions:{bar:{horizontal:true, borderRadius:2, barHeight:'65%'}},
+    colors:['#5ac8fa'],
+    dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:v=>v.toFixed(1)+'%'},
+    xaxis:{labels:{formatter:v=>v.toFixed(0)+'%'}},
+    tooltip:{y:{formatter:v=>v.toFixed(2)+'%'}}
+  });
+
+  // Callout
+  const c = document.getElementById('sub-callout');
+  c.className = 'sub-callout';
+  c.innerHTML =
+    '<div class="ico">ROUTE</div>' +
+    '<div class="msg">Processor mix drives corridor-level performance. <b>' + atRisk + '</b> markets are below the 65% processing floor. ' +
+    'For each, compare the best-performing processor on that corridor vs the primary route &mdash; re-weight with a canary traffic split if the delta exceeds 4 pts.</div>';
+
+  // Matrix table
+  const tbl = matrix.sort((a,b) => (a.processing_pct||a.approval_pct||0) - (b.processing_pct||b.approval_pct||0)).map(r=>{
+    const pp = r.processing_pct||r.approval_pct||0;
+    const health = pp>=80?'<span class="pill ok">HEALTHY</span>' : pp>=65?'<span class="pill warn">WATCH</span>' : '<span class="pill bad">AT RISK</span>';
+    return '<tr>' +
+      '<td><b>' + r.market + '</b></td>' +
+      '<td>' + (r.processor||'&mdash;') + '</td>' +
+      '<td class="num">' + pp.toFixed(2) + '%</td>' +
+      '<td class="num">' + (r.refund_pct||0).toFixed(2) + '%</td>' +
+      '<td class="num">' + (r.cb_bps||0).toFixed(1) + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(r.orders||0) + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(r.approved||0) + '</td>' +
+      '<td>' + health + '</td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('rates-tbody').innerHTML = tbl || '<tr><td colspan="8" class="num" style="padding:20px;color:var(--ink-2)">Matrix data not available in this snapshot.</td></tr>';
+
+  // Controls are informational only for this page (data is already aggregated)
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Source</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">Matrix</button>' +
+      '<button>By Market</button>' +
+      '<button>By Processor</button>' +
+    '</div>' +
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-2)">pre-aggregated snapshot</span>';
+})();
+</script>
+</body>
+</html>

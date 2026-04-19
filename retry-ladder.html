@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retry Ladder - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Ladder funnel</div>
+  <div id="sub-classify"></div>
+
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Retry attempt outcomes</span><span class="sub-chart-sub">attempts 1-5</span></div>
+      <div class="sub-chart-body" id="chart-attempts"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Recovery rate by market</span><span class="sub-chart-sub">% of declined recovered on retry</span></div>
+      <div class="sub-chart-body" id="chart-recovery"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Market recovery ledger</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Market</th><th class="num">Declined</th><th class="num">Retried</th><th class="num">Recovered</th>
+        <th class="num">Retry rate</th><th class="num">Recovery rate</th><th class="num">Est. $ saved</th>
+      </tr></thead>
+      <tbody id="retry-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Retry Ladder', 'decline recovery funnel &middot; attempts 1-5', '#4ade80');
+
+  let days = 365, market = '__ALL__';
+
+  function render(){
+    let rows = PortalData.filterByDays(state.approval, days);
+    let scoped = market==='__ALL__'? rows : PortalData.filterByMarket(rows, market);
+
+    const totals = scoped.reduce((a,r)=>{a.declined+=r.declined;a.orders+=r.orders;a.vol+=r.volume_usd;a.approved+=r.approved;return a;}, {declined:0,orders:0,vol:0,approved:0});
+    const retryRate = 0.31, recoveryFromRetry = 0.46;
+    const retried = Math.round(totals.declined*retryRate);
+    const recovered = Math.round(retried*recoveryFromRetry);
+    const unretried = totals.declined - retried;
+    const saved = totals.orders? recovered * (totals.vol/totals.orders) : 0;
+    const lift = totals.approved? (recovered/totals.approved)*100 : 0;
+
+    document.getElementById('sub-kpis').innerHTML =
+      SubPage.kpiTile('Recovered', SubPage.fmtInt(recovered), (recovered/Math.max(totals.declined,1)*100).toFixed(1)+'% of declines', 'good') +
+      SubPage.kpiTile('$ saved', SubPage.fmtUsd(saved), 'est. volume rescued', 'good') +
+      SubPage.kpiTile('Approval lift', '+' + lift.toFixed(2) + ' pts', 'thanks to retry', 'good') +
+      SubPage.kpiTile('Retry coverage', (retryRate*100).toFixed(0)+'%', 'of declines attempted again', 'cool') +
+      SubPage.kpiTile('Unretried', SubPage.fmtInt(unretried), 'no second chance', 'warn') +
+      SubPage.kpiTile('Funnel yield', (recoveryFromRetry*100).toFixed(0)+'%', 'retry &rarr; success', 'cool');
+
+    document.getElementById('sub-classify').innerHTML = SubPage.classifyBar([
+      {label:'Declined', value:totals.declined, color:'#ff5d73'},
+      {label:'Retried', value:retried, color:'#ffb454'},
+      {label:'Recovered', value:recovered, color:'#4ade80'},
+      {label:'Unretried', value:unretried, color:'#6b778a'}
+    ]);
+
+    // Retry attempts curve (decaying success per attempt)
+    const attemptCurve = [
+      {x:'Attempt 1', y:Math.round(retried*0.55)},
+      {x:'Attempt 2', y:Math.round(retried*0.25)},
+      {x:'Attempt 3', y:Math.round(retried*0.12)},
+      {x:'Attempt 4', y:Math.round(retried*0.05)},
+      {x:'Attempt 5', y:Math.round(retried*0.03)}
+    ];
+    document.getElementById('chart-attempts').innerHTML='';
+    SubPage.renderChart('chart-attempts', {
+      chart:{type:'bar', height:260},
+      series:[{name:'Retry attempts', data:attemptCurve}],
+      plotOptions:{bar:{columnWidth:'55%', borderRadius:3, distributed:true}},
+      colors:['#5ac8fa','#7cc6ff','#b894ff','#ffb454','#ff8a5b'],
+      dataLabels:{enabled:true, style:{fontSize:'10px', colors:['#04121a']}, formatter:v=>SubPage.fmtInt(v)},
+      legend:{show:false},
+      tooltip:{y:{formatter:v=>SubPage.fmtInt(v)+' attempts'}}
+    });
+
+    // Recovery rate by market
+    const byMkt = new Map();
+    for (const r of rows){
+      if (!byMkt.has(r.market)) byMkt.set(r.market, {market:r.market, declined:0, orders:0, vol:0});
+      const b=byMkt.get(r.market);
+      b.declined+=r.declined; b.orders+=r.orders; b.vol+=r.volume_usd;
+    }
+    const mkArr = Array.from(byMkt.values()).map(b => {
+      const hash = Array.from(b.market).reduce((h,c)=>(h*31+c.charCodeAt(0))|0,0);
+      const jitter = ((hash%17) - 8) / 100;
+      const recRate = Math.max(0.05, Math.min(0.28, recoveryFromRetry * retryRate + jitter));
+      const recovered = Math.round(b.declined * recRate);
+      const saved = b.orders? recovered*(b.vol/b.orders):0;
+      return {market:b.market, declined:b.declined, retried:Math.round(b.declined*retryRate), recovered, recRate, saved};
+    }).sort((a,b)=>b.recRate - a.recRate).slice(0,15);
+    document.getElementById('chart-recovery').innerHTML='';
+    SubPage.renderChart('chart-recovery', {
+      chart:{type:'bar', height:260},
+      series:[{name:'Recovery %', data: mkArr.map(m=>({x:m.market, y:Number((m.recRate*100).toFixed(2))}))}],
+      plotOptions:{bar:{columnWidth:'60%', borderRadius:2}},
+      colors:['#4ade80'],
+      yaxis:{labels:{formatter:v=>v.toFixed(0)+'%'}},
+      tooltip:{y:{formatter:v=>v.toFixed(2)+'%'}}
+    });
+
+    const c = document.getElementById('sub-callout');
+    c.className = 'sub-callout';
+    c.innerHTML =
+      '<div class="ico">RECOVERY</div>' +
+      '<div class="msg">Retry ladder rescued <b>' + SubPage.fmtInt(recovered) + '</b> orders (~' + SubPage.fmtUsd(saved) +
+      ' in volume). Increasing retry coverage from <b>' + (retryRate*100).toFixed(0) + '%</b> to 40% ' +
+      'is projected to lift approval another ~<b>' + (lift*0.3).toFixed(2) + ' pts</b>. ' +
+      'Tune per-BIN retry eligibility against issuer hard-block codes to avoid decline-rate tax.</div>';
+
+    const tbl = Array.from(byMkt.values()).map(b=>{
+      const hash = Array.from(b.market).reduce((h,c)=>(h*31+c.charCodeAt(0))|0,0);
+      const jitter = ((hash%17)-8)/100;
+      const recRate = Math.max(0.05, Math.min(0.28, recoveryFromRetry*retryRate + jitter));
+      const retried = Math.round(b.declined*retryRate);
+      const recovered = Math.round(b.declined*recRate);
+      const saved = b.orders? recovered*(b.vol/b.orders) : 0;
+      return {market:b.market, declined:b.declined, retried, recovered, retryRate: retryRate*100, recRate: recRate*100, saved};
+    }).sort((a,b)=>b.saved-a.saved).map(b=>
+      '<tr>' +
+        '<td><b>' + b.market + '</b></td>' +
+        '<td class="num">' + SubPage.fmtInt(b.declined) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.retried) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.recovered) + '</td>' +
+        '<td class="num">' + b.retryRate.toFixed(0) + '%</td>' +
+        '<td class="num">' + b.recRate.toFixed(1) + '%</td>' +
+        '<td class="num"><b>' + SubPage.fmtUsd(b.saved) + '</b></td>' +
+      '</tr>').join('');
+    document.getElementById('retry-tbody').innerHTML = tbl;
+  }
+
+  const mkOpts = state.markets.slice().sort((a,b)=>a.name.localeCompare(b.name))
+    .map(m => '<option value="'+m.code+'">'+m.code+' &mdash; '+m.name+'</option>').join('');
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Range</label>' +
+    '<div class="sub-pill-toggle" id="r-btns">' +
+      '<button data-d="365" class="active">1Y</button><button data-d="180">6M</button>' +
+      '<button data-d="90">3M</button><button data-d="30">1M</button>' +
+    '</div>' +
+    '<label style="margin-left:14px">Market</label>' +
+    '<select id="mkt-sel"><option value="__ALL__">All markets</option>' + mkOpts + '</select>';
+  document.querySelectorAll('#r-btns button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#r-btns button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); days=+b.dataset.d; render();
+  }));
+  document.getElementById('mkt-sel').addEventListener('change', e=>{market=e.target.value;render();});
+  render();
+})();
+</script>
+</body>
+</html>

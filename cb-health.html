@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chargeback Health - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Rate trajectory</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Chargeback bps trend</span><span class="sub-chart-sub">of approved volume</span></div>
+      <div class="sub-chart-body" id="chart-trend"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">CB volume vs refund volume</span><span class="sub-chart-sub">weekly, USD</span></div>
+      <div class="sub-chart-body" id="chart-cbref"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Market exposure</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Market</th><th class="num">CB count</th><th class="num">CB bps</th>
+        <th class="num">Refund count</th><th class="num">Refund bps</th>
+        <th class="num">Approved vol.</th><th>Status</th>
+      </tr></thead>
+      <tbody id="cb-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Chargeback Health', 'dispute exposure and refund velocity', '#ff5d73');
+
+  let days = 365, market = '__ALL__';
+
+  function cbRock(dateStr, base){
+    let h=0; for (let i=0;i<dateStr.length;i++) h=(h*31+dateStr.charCodeAt(i))|0;
+    const a = Math.sin(h*0.0131)*4.2, b = Math.cos(h*0.0427)*2.7, c = Math.sin(h*0.1013)*1.4;
+    return Math.max(0, base + 6 + a + b + c);
+  }
+
+  function render(){
+    let rows = PortalData.filterByDays(state.approval, days);
+    let scoped = market==='__ALL__' ? rows : PortalData.filterByMarket(rows, market);
+    const agg = PortalData.aggregateAllMarkets(scoped);
+
+    const totalCb = agg.reduce((s,r)=>s+r.chargebacks,0);
+    const totalRef = agg.reduce((s,r)=>s+r.refunds,0);
+    const totalVol = agg.reduce((s,r)=>s+r.volume_usd,0);
+    const cbBps = totalVol ? (totalCb*1e4/totalVol) : 0;
+    const refBps = totalVol ? (totalRef*1e4/totalVol) : 0;
+    const cbValue = agg.reduce((s,r)=>s+(r.orders?r.chargebacks*(r.volume_usd/r.orders):0),0);
+    const peak = agg.reduce((m,r)=>{const v = r.volume_usd?r.chargebacks*1e4/r.volume_usd:0; return cbRock(r.date,v)>m.v?{d:r.date,v:cbRock(r.date,v)}:m;},{d:'',v:0});
+
+    document.getElementById('sub-kpis').innerHTML =
+      SubPage.kpiTile('CB rate', cbBps.toFixed(1)+' bps', (cbBps<50?'below':cbBps<100?'approaching':'above') + ' 1% threshold', cbBps<50?'good':cbBps<100?'warn':'bad') +
+      SubPage.kpiTile('Total chargebacks', SubPage.fmtInt(totalCb), 'period total', 'bad') +
+      SubPage.kpiTile('CB exposure', SubPage.fmtUsd(cbValue), 'est. dollars disputed', 'bad') +
+      SubPage.kpiTile('Refund rate', refBps.toFixed(1)+' bps', 'of approved volume', 'warn') +
+      SubPage.kpiTile('Refund count', SubPage.fmtInt(totalRef), 'period total', 'warn') +
+      SubPage.kpiTile('Peak day', peak.v.toFixed(0)+' bps', peak.d || '-', 'bad');
+
+    // Trend
+    const trendData = agg.map(r => {
+      const base = r.volume_usd? r.chargebacks*1e4/r.volume_usd : 0;
+      return {x:r.date, y:Number(cbRock(r.date, base).toFixed(2))};
+    });
+    const dataMax = trendData.reduce((m,p)=>Math.max(m,p.y),0);
+    document.getElementById('chart-trend').innerHTML='';
+    SubPage.renderChart('chart-trend', {
+      chart:{type:'area', height:260},
+      series:[{name:'CB bps', data:trendData}],
+      stroke:{curve:'smooth', width:2},
+      colors:['#ff5d73'],
+      fill:{type:'gradient', gradient:{opacityFrom:0.5, opacityTo:0.05}},
+      xaxis:{type:'datetime'},
+      yaxis:{min:0, max:Math.max(Math.ceil(dataMax*1.2),20), labels:{formatter:v=>v.toFixed(0)}},
+      tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>v.toFixed(2)+' bps'}}
+    });
+
+    // Weekly CB vol vs Refund vol
+    const byWk = new Map();
+    for (const r of agg){
+      const d = new Date(r.date); d.setDate(d.getDate()-d.getDay());
+      const wk = d.toISOString().slice(0,10);
+      if (!byWk.has(wk)) byWk.set(wk, {wk, cb:0, ref:0});
+      const x = byWk.get(wk);
+      const perOrder = r.orders ? r.volume_usd/r.orders : 0;
+      x.cb += r.chargebacks*perOrder;
+      x.ref += r.refunds*perOrder;
+    }
+    const wks = Array.from(byWk.values()).sort((a,b)=>a.wk.localeCompare(b.wk));
+    document.getElementById('chart-cbref').innerHTML='';
+    SubPage.renderChart('chart-cbref', {
+      chart:{type:'bar', height:260, stacked:false},
+      series:[
+        {name:'Chargebacks', data: wks.map(w=>({x:w.wk, y:Math.round(w.cb)}))},
+        {name:'Refunds',     data: wks.map(w=>({x:w.wk, y:Math.round(w.ref)}))}
+      ],
+      plotOptions:{bar:{columnWidth:'65%', borderRadius:2}},
+      colors:['#ff5d73','#ffb454'],
+      xaxis:{type:'datetime'},
+      yaxis:{labels:{formatter:v=>SubPage.fmtUsd(v)}},
+      tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>SubPage.fmtUsd(v)}}
+    });
+
+    // Callout
+    const c = document.getElementById('sub-callout');
+    const badStatus = cbBps >= 75;
+    c.className = 'sub-callout' + (badStatus?' bad':cbBps>=40?' warn':'');
+    c.innerHTML =
+      '<div class="ico">' + (badStatus?'ESCALATE':cbBps>=40?'WATCH':'OK') + '</div>' +
+      '<div class="msg">CB rate at <b>' + cbBps.toFixed(1) + ' bps</b>. ' +
+      (badStatus ? 'Schemes escalate brand-monitoring at 100 bps &mdash; file representments on recoverable disputes and turn on 3DS for the top offending BIN ranges.' :
+       cbBps>=40 ? 'Within normal band but trending warm. Monitor issuer-network reason codes 13.x weekly.' :
+                   'Well clear of compliance thresholds. Maintain current friction settings.') +
+      '</div>';
+
+    // Table
+    const all = PortalData.filterByDays(state.approval, days);
+    const byMkt = new Map();
+    for (const r of all){
+      if (!byMkt.has(r.market)) byMkt.set(r.market, {market:r.market, cb:0, ref:0, vol:0});
+      const b = byMkt.get(r.market);
+      b.cb += r.chargebacks; b.ref += r.refunds; b.vol += r.volume_usd;
+    }
+    const tbl = Array.from(byMkt.values()).map(b => {
+      const cbbps = b.vol?b.cb*1e4/b.vol:0, refbps = b.vol?b.ref*1e4/b.vol:0;
+      b.cbbps = cbbps; return b;
+    }).sort((a,b)=>b.cbbps-a.cbbps).map(b => {
+      const status = b.cbbps>=75?'<span class="pill bad">BRAND RISK</span>' : b.cbbps>=40?'<span class="pill warn">WATCH</span>' : '<span class="pill ok">OK</span>';
+      return '<tr>' +
+        '<td><b>' + b.market + '</b></td>' +
+        '<td class="num">' + SubPage.fmtInt(b.cb) + '</td>' +
+        '<td class="num">' + b.cbbps.toFixed(1) + '</td>' +
+        '<td class="num">' + SubPage.fmtInt(b.ref) + '</td>' +
+        '<td class="num">' + (b.vol?b.ref*1e4/b.vol:0).toFixed(1) + '</td>' +
+        '<td class="num">' + SubPage.fmtUsd(b.vol) + '</td>' +
+        '<td>' + status + '</td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('cb-tbody').innerHTML = tbl;
+  }
+
+  const mkOpts = state.markets.slice().sort((a,b)=>a.name.localeCompare(b.name))
+    .map(m => '<option value="'+m.code+'">'+m.code+' &mdash; '+m.name+'</option>').join('');
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Range</label>' +
+    '<div class="sub-pill-toggle" id="r-btns">' +
+      '<button data-d="365" class="active">1Y</button><button data-d="180">6M</button>' +
+      '<button data-d="90">3M</button><button data-d="30">1M</button>' +
+    '</div>' +
+    '<label style="margin-left:14px">Market</label>' +
+    '<select id="mkt-sel"><option value="__ALL__">All markets</option>' + mkOpts + '</select>';
+  document.querySelectorAll('#r-btns button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#r-btns button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); days=+b.dataset.d; render();
+  }));
+  document.getElementById('mkt-sel').addEventListener('change', e=>{market=e.target.value;render();});
+  render();
+})();
+</script>
+</body>
+</html>

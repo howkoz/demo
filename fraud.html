@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fraud &amp; Abuse - Portal 9094</title>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<link rel="stylesheet" href="../../assets/css/subpage.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">9094</span><span class="title">Payment Operations Command Center</span><span class="demo-badge">DEMO &middot; synthetic data</span></div>
+  <nav class="topnav"><a href="../../index.html">Command Center</a><a href="../directory.html">Provider Directory</a><a href="../docs/index.html">Docs</a><a href="../../schema.html">Backend Schema</a></nav>
+</header>
+
+<section id="sub-header" class="sub-header"></section>
+
+<main class="sub-wrap">
+  <div id="sub-controls" class="sub-controls"></div>
+  <div id="sub-kpis" class="sub-kpis"></div>
+
+  <div class="sub-section-title"><span class="accent">01</span> &nbsp;Exposure timeline</div>
+  <div class="sub-chart-grid">
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Signal cadence</span><span class="sub-chart-sub">detections per week</span></div>
+      <div class="sub-chart-body" id="chart-trend"></div>
+    </div>
+    <div class="sub-chart">
+      <div class="sub-chart-head"><span class="sub-chart-title">Exposure by signal</span><span class="sub-chart-sub">USD at risk</span></div>
+      <div class="sub-chart-body" id="chart-exposure"></div>
+    </div>
+  </div>
+
+  <div id="sub-callout" class="sub-callout bad"></div>
+
+  <div class="sub-section-title"><span class="accent">02</span> &nbsp;Open cases</div>
+  <div class="sub-table-wrap">
+    <table class="sub-table">
+      <thead><tr>
+        <th>Case</th><th>Signal</th><th>Markets</th>
+        <th class="num">Count</th><th class="num">Exposure</th><th>Severity</th>
+      </tr></thead>
+      <tbody id="cases-tbody"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="footer"><span>Portal 9094 demo &middot; widget detail &middot; generated <span id="gen-date">&mdash;</span></span><span class="footer-right">country &amp; provider names are real &middot; metrics are not</span></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script src="../../assets/js/data.js"></script>
+<script src="../../assets/js/subpage.js"></script>
+<script>
+(async function(){
+  const state = await SubPage.load();
+  SubPage.genStamp(state);
+  SubPage.renderHeader('Fraud & Abuse', 'abuse signals &middot; exposure &middot; case workload', '#ff5d73');
+
+  const f = state.fraud;
+  const kpis = f.kpis || {};
+  const signals = f.signals || [];
+  const trends = f.trends || [];
+  const cases = f.cases || [];
+
+  const totalSig = kpis.signals_30d != null ? kpis.signals_30d : signals.reduce((s,r)=>s+(r.count||0),0);
+  const totalExp = kpis.exposure_usd != null ? kpis.exposure_usd : signals.reduce((s,r)=>s+(r.exposure_usd||r.exposure||0),0);
+  const highSev = kpis.high_severity != null ? kpis.high_severity : signals.filter(r=>(r.severity||'').toUpperCase()==='HIGH').length;
+  const openCases = kpis.open_cases != null ? kpis.open_cases : cases.filter(c => (c.status||'OPEN')==='OPEN').length;
+  const uniqueMarkets = new Set(signals.flatMap(s => s.markets||[])).size;
+  const sigTypes = signals.length;
+
+  document.getElementById('sub-kpis').innerHTML =
+    SubPage.kpiTile('Signals (30d)', SubPage.fmtInt(totalSig), sigTypes + ' signal classes', 'bad') +
+    SubPage.kpiTile('Exposure', SubPage.fmtUsd(totalExp), 'USD at risk', 'bad') +
+    SubPage.kpiTile('High severity', SubPage.fmtInt(highSev), 'needs escalation', 'bad') +
+    SubPage.kpiTile('Open cases', SubPage.fmtInt(openCases), 'awaiting review', 'warn') +
+    SubPage.kpiTile('Markets touched', SubPage.fmtInt(uniqueMarkets), 'by current signals', 'warn') +
+    SubPage.kpiTile('Signals / case', (openCases?(totalSig/openCases).toFixed(1):'-'), 'load per investigator', 'violet');
+
+  // Signal cadence over time
+  const trendSeries = trends.length ? trends : (function(){
+    // fabricate 26 weeks if the snapshot has no trend blob
+    const out=[]; const now = new Date();
+    for (let i=25;i>=0;i--){ const d=new Date(now); d.setDate(d.getDate() - i*7);
+      const h = (i*37+11)%23; out.push({week: d.toISOString().slice(0,10), count: Math.round(40 + h*3 + (i%3===0?25:0))}); }
+    return out;
+  })();
+  document.getElementById('chart-trend').innerHTML='';
+  SubPage.renderChart('chart-trend', {
+    chart:{type:'bar', height:280},
+    series:[{name:'Signals', data: trendSeries.map(r=>({x:r.week||r.date, y:r.count||r.total||0}))}],
+    plotOptions:{bar:{columnWidth:'65%', borderRadius:2}},
+    colors:['#ff5d73'],
+    xaxis:{type:'datetime'},
+    tooltip:{x:{format:'yyyy-MM-dd'}, y:{formatter:v=>SubPage.fmtInt(v)+' signals'}}
+  });
+
+  // Exposure bar
+  const sigSorted = signals.slice().sort((a,b)=>(b.exposure_usd||b.exposure||0)-(a.exposure_usd||a.exposure||0));
+  document.getElementById('chart-exposure').innerHTML='';
+  SubPage.renderChart('chart-exposure', {
+    chart:{type:'bar', height:280},
+    series:[{name:'Exposure', data: sigSorted.map(r=>({x:r.signal||r.name, y:Math.round(r.exposure_usd||r.exposure||0)}))}],
+    plotOptions:{bar:{horizontal:true, borderRadius:2, barHeight:'65%'}},
+    colors:['#b894ff'],
+    dataLabels:{enabled:true, style:{fontSize:'10px',colors:['#04121a']}, formatter:v=>SubPage.fmtUsd(v)},
+    xaxis:{labels:{formatter:v=>SubPage.fmtUsd(v)}},
+    tooltip:{y:{formatter:v=>SubPage.fmtUsd(v)}}
+  });
+
+  const c = document.getElementById('sub-callout');
+  c.innerHTML =
+    '<div class="ico">RISK</div>' +
+    '<div class="msg"><b>' + SubPage.fmtInt(highSev) + '</b> signals at HIGH severity carry <b>' + SubPage.fmtUsd(totalExp) +
+    '</b> of exposure. Top signal <b>' + (sigSorted[0]?sigSorted[0].signal||sigSorted[0].name:'-') + '</b> concentrates ' +
+    '<b>' + (totalExp?Math.round((sigSorted[0]?.exposure_usd||sigSorted[0]?.exposure||0)/totalExp*100):0) +
+    '%</b> of dollar risk &mdash; tighten the detection rule before expanding enforcement.</div>';
+
+  // Cases
+  const casesTbl = cases.length ? cases.map(c => {
+    const sev = (c.severity||'INFO').toUpperCase();
+    const sevClass = sev==='HIGH'?'bad' : sev==='MED'||sev==='WARN'?'warn' : 'info';
+    return '<tr>' +
+      '<td><b>' + (c.id||c.case_id||'-') + '</b></td>' +
+      '<td>' + (c.signal||c.name||'-') + '</td>' +
+      '<td>' + ((c.markets||[]).join(', ')||'-') + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(c.count||0) + '</td>' +
+      '<td class="num">' + SubPage.fmtUsd(c.exposure_usd||c.exposure||0) + '</td>' +
+      '<td><span class="pill ' + sevClass + '">' + sev + '</span></td>' +
+    '</tr>';
+  }).join('') : sigSorted.slice(0,20).map((s,i) => {
+    const sev = (s.severity||'INFO').toUpperCase();
+    const sevClass = sev==='HIGH'?'bad' : sev==='MED'||sev==='WARN'?'warn' : 'info';
+    return '<tr>' +
+      '<td><b>CASE-' + String(i+1).padStart(4,'0') + '</b></td>' +
+      '<td>' + (s.signal||s.name) + '</td>' +
+      '<td>' + ((s.markets||[]).join(', ')||'-') + '</td>' +
+      '<td class="num">' + SubPage.fmtInt(s.count||0) + '</td>' +
+      '<td class="num">' + SubPage.fmtUsd(s.exposure_usd||s.exposure||0) + '</td>' +
+      '<td><span class="pill ' + sevClass + '">' + sev + '</span></td>' +
+    '</tr>';
+  }).join('');
+  document.getElementById('cases-tbody').innerHTML = casesTbl;
+
+  document.getElementById('sub-controls').innerHTML =
+    '<label>Severity</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">All</button>' +
+      '<button>HIGH</button>' +
+      '<button>MED</button>' +
+      '<button>INFO</button>' +
+    '</div>' +
+    '<label style="margin-left:14px">Window</label>' +
+    '<div class="sub-pill-toggle">' +
+      '<button class="active">30d</button>' +
+      '<button>7d</button>' +
+      '<button>90d</button>' +
+    '</div>' +
+    '<span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--ink-2)">realtime detection feed</span>';
+})();
+</script>
+</body>
+</html>
